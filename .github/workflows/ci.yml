@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: npm ci
-      - run: python -m pip install -r requirements-pdf.txt
+      - run: python -m pip install -r requirements-dev.txt
       - run: npx playwright install --with-deps chromium
       - run: npm run check:repo
       - run: npm test

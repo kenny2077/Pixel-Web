@@ -40,6 +40,7 @@ npm start
 ## 测试与部署
 
 ```bash
+pip install -r requirements-dev.txt
 npm test
 npm run check:repo
 # 启动本地服务后：

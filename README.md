@@ -83,6 +83,7 @@ Cloudflare may improve capacity or network proximity, but it does not remove sou
 ## Development
 
 ```bash
+pip install -r requirements-dev.txt
 npm test                 # Serial algorithm, browser, layout, PDF and API tests
 npm run check:repo       # Documentation links and portable dependency metadata
 npm run verify           # Live website smoke checks; start the server first

@@ -5,8 +5,7 @@ import {renderPreview} from '../lib/preview.mjs';
 import {execFileSync} from 'node:child_process';
 
 test('PDF rendering includes every page and clickable annotations',async()=>{
-  const {renderPdfDocument}=await import('../lib/pdf.mjs');
-  const python='/Users/kenny/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3';
+  const {renderPdfDocument,pdfPython:python}=await import('../lib/pdf.mjs');
   const bytes=execFileSync(python,['-c',`import io,sys
 from reportlab.pdfgen import canvas
 b=io.BytesIO();c=canvas.Canvas(b,pagesize=(300,400));c.drawString(20,350,'First page');c.linkURL('https://example.com', (20,320,140,340));c.linkAbsolute('Next','second',Rect=(20,280,140,300));c.linkURL('javascript:alert(1)',(20,240,140,260));c.showPage();c.bookmarkPage('second');c.drawString(20,350,'Second page');c.save();sys.stdout.buffer.write(b.getvalue())`]);

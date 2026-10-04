@@ -1,6 +1,6 @@
 # Contributing to Pixel Web
 
-Follow the [README setup](README.md#quick-start). Run `npm test` and `npm run check:repo` before opening a pull request. Browser tests are serial to keep memory use predictable. `npm run verify` needs a running local server and network access; it is a smoke check, not a deterministic CI test.
+Follow the [README setup](README.md#quick-start), then install test dependencies with `pip install -r requirements-dev.txt` in the active Python environment. Run `npm test` and `npm run check:repo` before opening a pull request. Browser tests are serial to keep memory use predictable. `npm run verify` needs a running local server and network access; it is a smoke check, not a deterministic CI test.
 
 ## Report a rendering bug
 
