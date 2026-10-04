@@ -7,3 +7,7 @@ cloudflare/.wrangler/
 .impeccable/
 .DS_Store
 docs/superpowers/
+PRODUCT.md
+DESIGN.md
+.agents/
+.codex/

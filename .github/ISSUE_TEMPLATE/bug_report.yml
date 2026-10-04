@@ -1,0 +1,30 @@
+name: Rendering or interaction bug
+description: Report a reproducible conversion problem.
+title: 'fix: '
+labels: [bug]
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Public source URL
+      description: Do not include private URLs or credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps and settings
+      description: Include viewport, text mode, pixel size and palette.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result
+      description: Add original and converted screenshots if useful. Remove private data.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Version, OS and browser

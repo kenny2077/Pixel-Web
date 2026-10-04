@@ -1,0 +1,8 @@
+node_modules
+.cache
+artifacts
+.git
+cloudflare/node_modules
+cloudflare/.wrangler
+tests
+docs
