@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Turn a public webpage into a clickable pixel-style preview. Algorithmic conversion, no AI.">
+  <title>PixelWeb · Website to pixel art</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <header class="header"><a class="brand" href="/" aria-label="PixelWeb home"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 4h16v4h4v12h-4v4H4V4zm4 4v12h8v-4h4V8H8zm4 4h4v4h-4v-4z" fill="currentColor"/></svg>PixelWeb</a><form id="convert-form" class="url-form"><label for="website-url" class="sr-only">Website URL</label><div class="url-row"><input id="website-url" name="url" type="text" inputmode="url" placeholder="https://your-website.com" required autocomplete="url" spellcheck="false"><button id="convert" class="primary" type="submit">Convert</button></div></form><div class="page-actions"><button id="back" type="button" disabled aria-label="Previous page">Back</button><button id="settings-toggle" type="button" aria-expanded="false">Style</button></div></header>
+  <main>
+
+    <aside id="settings-panel" class="settings" hidden><h2>Pixel style</h2><fieldset><legend>Artwork</legend><div class="preset-list"><button type="button" class="preset selected" data-preset="balanced" aria-pressed="true">Balanced</button><button type="button" class="preset" data-preset="bold" aria-pressed="false">Bold</button><button type="button" class="preset" data-preset="soft" aria-pressed="false">Fine</button></div><label class="range-label" for="cell">Art pixel size <output id="cell-value" for="cell">2 px</output></label><input id="cell" type="range" min="2" max="8" step="1" value="2"><label class="range-label" for="colors">Art palette <output id="colors-value" for="colors">32</output></label><input id="colors" type="range" min="8" max="32" step="8" value="32"><label class="checkbox"><input id="dither" type="checkbox">Dither background shading</label><p class="detail-note">Images and small icons keep finer pixels and more colors for clarity.</p></fieldset><fieldset><legend>Text</legend><label class="radio"><input type="radio" name="text-mode" value="headings">Pixel headings</label><label class="radio"><input type="radio" name="text-mode" value="all" checked>All pixel text</label><label class="radio"><input type="radio" name="text-mode" value="original">Original fonts</label></fieldset><div class="segmented"><button type="button" id="pixel-view" class="active" aria-pressed="true">Pixel</button><button type="button" id="original-view" aria-pressed="false">Original</button></div></aside>
+    <div id="preview-stage" class="preview-stage"><div id="empty-state" class="empty-state"></div><div id="frame-wrap" class="frame-wrap" hidden><iframe id="preview-frame" title="Interactive pixel website" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe></div><div id="loading-state" class="loading-state" hidden><div class="loading-pixels" aria-hidden="true"><i></i><i></i><i></i></div><h2 id="loading-title">Loading website…</h2><p id="loading-detail">Reading the full page and preserving image details.</p></div></div>
+  </main>
+  <footer class="preview-footer"><span id="status" class="status" role="status" aria-live="polite"></span><span id="capture-title">Paste a website to begin</span><span id="timing">Ready</span><a id="open-preview" aria-disabled="true" target="_blank" rel="noopener">Open page</a></footer>
+</body>
+</html>

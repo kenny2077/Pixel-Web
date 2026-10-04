@@ -1,0 +1,19 @@
+{
+  "name": "pixelweb",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A full-page, interactive pixel-style website converter using deterministic visual algorithms.",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "verify": "node scripts/verify.mjs",
+    "check:repo": "node scripts/check-repository.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.62.1",
+    "sharp": "0.35.4"
+  }
+}
