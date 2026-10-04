@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="See Pixel Web turn a real website into a readable pixel-style preview. Explore the recorded comparison and run the converter locally.">
+  <title>Pixel Web — the web, in pixels</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="demo.js" defer></script>
+</head>
+<body>
+  <header><a class="brand" href="https://github.com/kenny2077/Pixel-Web">Pixel Web</a><nav aria-label="Project"><a href="#run">Run locally</a><a href="https://github.com/kenny2077/Pixel-Web">GitHub</a></nav></header>
+  <main>
+    <section class="intro"><h1>The web,<br>in pixels.</h1><div><p>Keep the page. Change the pixels.</p><p class="detail">Full-page website conversion with readable images, English and Chinese pixel text, and supported source controls. This demo displays recorded screenshots.</p><a class="button" href="https://github.com/kenny2077/Pixel-Web#quick-start">Try your own website</a></div></section>
+    <section class="comparison" aria-labelledby="comparison-title">
+      <div class="comparison-bar"><h2 id="comparison-title">Aurora Survival</h2><div class="switch" role="group" aria-label="Recorded preview style"><button type="button" data-view="original" aria-pressed="false">Original</button><button type="button" data-view="pixel" aria-pressed="true">Pixel</button></div></div>
+      <img id="preview" src="assets/aurora-pixel.jpg" alt="Recorded Pixel Web conversion of Aurora Survival" width="977" height="804" fetchpriority="high">
+      <p id="preview-caption" aria-live="polite">Pixel view · Recorded from the local converter.</p>
+    </section>
+    <div class="demo-note"><strong>This is a recorded comparison.</strong> The switch changes screenshots. It does not submit URLs or run a conversion server. <a href="https://survival.auroraforgelab.com/">Visit the source website</a>.</div>
+    <section class="run" id="run"><h2>Make your own<br>pixel page.</h2><div><p>Run the converter on your machine. Paste a public URL, choose Convert, then explore the full page.</p><pre><code>git clone https://github.com/kenny2077/Pixel-Web.git
+cd Pixel-Web
+npm ci</code></pre><p>Node.js 22+, Python and a browser are required. <a href="https://github.com/kenny2077/Pixel-Web#quick-start">Follow the complete setup guide</a>.</p></div></section>
+  </main>
+  <footer><span>Pixel Web · Early release · MIT code</span><a href="https://github.com/kenny2077/Pixel-Web/blob/main/README.zh-CN.md">中文说明</a><a href="https://github.com/kenny2077/Pixel-Web/blob/main/THIRD_PARTY_NOTICES.md">Credits</a></footer>
+</body>
+</html>
