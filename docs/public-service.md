@@ -21,7 +21,7 @@ The gateway assigns a random HttpOnly session cookie and replaces the session he
 - Enable the Workers Paid base plan in the owner's account without enabling additional paid products.
 - Validate the complete Linux container, PDF rendering, memory use and page interactions.
 - Verify Durable Object reservations and idle shutdown in the actual platform.
-- Add and verify source-network isolation before anonymous public access. Current URL checks do not pin DNS; the converter is not yet a hardened public proxy.
+- Verify hosted source-network isolation in the deployed Container. The prepared hosted mode uses a public-IP-pinned HTTP/CONNECT proxy for browser connections and pinned download connections for PDF responses. Local mode keeps the existing networking behavior. The application is not yet independently audited as a public proxy.
 - Verify two independent visitor sessions cannot read or control each other.
 - Enable public mode and update the Pages destination only after those checks pass.
 
