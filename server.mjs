@@ -34,12 +34,15 @@ async function styleCapture(entry, options) {
 
 const previewUrl = (id, options) => `/preview/${id}?${new URLSearchParams({ cell: options.cell, colors: options.colors, dither: options.dither ? '1' : '0', textMode: options.textMode })}`;
 
-export async function startServer({ port = Number(process.env.PORT) || 4173, host = process.env.HOST || '127.0.0.1' } = {}) {
+export async function startServer({ port = Number(process.env.PORT) || 4173, host = process.env.HOST || '127.0.0.1', publicService = process.env.PIXELWEB_PUBLIC_SERVICE === '1' } = {}) {
   const server = createServer(async (request, response) => {
     response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Referrer-Policy', 'no-referrer');
     try {
       const url = new URL(request.url, 'http://127.0.0.1');
+      if (url.pathname === '/health' && request.method === 'GET') return json(response, 200, { status: 'ok' });
+      const owner = publicService ? request.headers['x-pixelweb-session'] : null;
+      if (publicService && !/^[a-f\d-]{36}$/.test(owner || '')) return json(response, 403, { error: 'Use the public Pixel Web page to start a session.' });
       if (request.method === 'POST') {
         const origin = request.headers.origin;
         if (origin && ![`http://${request.headers.host}`, `https://${request.headers.host}`].includes(origin)) return json(response, 403, { error: 'Use the PixelWeb page to convert a website.' });
@@ -54,7 +57,7 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
             const height = Math.round(Math.max(300, Math.min(1800, Number(input.height) || 800)));
             const capture = await captureWebsite(sourceUrl, width, { live: true, height });
             const id = randomUUID();
-            const entry = { capture, styles: new Map() };
+            const entry = { capture, styles: new Map(), owner };
             const options = optionsFrom(input);
             const transformed = await styleCapture(entry, options);
             while (captures.size >= 3) {
@@ -69,7 +72,7 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
         }
         if (url.pathname === '/api/style' || url.pathname === '/api/interact') {
           const entry = captures.get(input.id);
-          if (!entry) return json(response, 404, { error: 'This capture has expired. Convert the URL again.' });
+          if (!entry || entry.owner !== owner) return json(response, 404, { error: 'This capture has expired. Convert the URL again.' });
           if (busy) return json(response, 409, { error: 'Another conversion is running. Wait for it to finish.' });
           busy = true;
           const sourceDeadline = (url.pathname === '/api/interact' || Number(input.width)) && entry.capture.session
@@ -106,7 +109,7 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
       const match = url.pathname.match(/^\/(preview|original)\/([a-f\d-]+)$/);
       if (match) {
         const entry = captures.get(match[2]);
-        if (!entry) return json(response, 404, { error: 'This capture has expired. Convert the URL again.' });
+        if (!entry || entry.owner !== owner) return json(response, 404, { error: 'This capture has expired. Convert the URL again.' });
         const options = optionsFrom({ ...Object.fromEntries(url.searchParams), dither: url.searchParams.get('dither') === '1' });
         const html = match[1] === 'original' ? renderOriginal(entry.capture) : entry.styles.get(JSON.stringify(options));
         if (!html) return json(response, 404, { error: 'Select this style from the converter first.' });

@@ -77,7 +77,7 @@ for(const button of document.querySelectorAll('[data-preset]'))button.addEventLi
   for(const sibling of document.querySelectorAll('[data-preset]')){const selected=sibling===button;sibling.classList.toggle('selected',selected);sibling.setAttribute('aria-pressed',String(selected));}updateControls();restyle();
 });
 for(const input of document.querySelectorAll('.settings input'))input.addEventListener('input',()=>{updateControls();clearTimeout(styleTimer);styleTimer=setTimeout(restyle,200);});
-const initial=new URLSearchParams(location.search).get('url');if(initial){$('#website-url').value=initial;convert(initial);}
+const initial=new URLSearchParams(location.search).get('url')||'https://en.wikipedia.org/wiki/Pixel_art';$('#website-url').value=initial;convert(initial);
 let resizeTimer;
 window.addEventListener('resize',()=>{
   clearTimeout(resizeTimer);

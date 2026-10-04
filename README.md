@@ -8,8 +8,6 @@
 
 Turn a public website into a full-page, clickable pixel-style preview. Keep its layout, recognizable images and working controls. Conversion uses image algorithms and pixel fonts, with no AI calls.
 
-<p align="center"><img src="demo/assets/aurora-pixel.jpg" alt="Pixel Web converting Aurora Survival, with preserved layout and pixel typography" width="100%"></p>
-
 **[Explore the recorded comparison](https://kenny2077.github.io/Pixel-Web/)** or run the converter locally. The demo shows captured results; it does not accept new URLs. Pixel Web is an early release, with a tested core and documented compatibility limits.
 
 ## What it does

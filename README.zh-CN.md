@@ -6,8 +6,6 @@
 
 [查看录制 demo](https://kenny2077.github.io/Pixel-Web/) · [English README](README.md) · [贡献指南](CONTRIBUTING.md)
 
-<img src="demo/assets/aurora-pixel.jpg" alt="Aurora Survival 的真实 Pixel Web 转换结果" width="100%">
-
 Demo 展示已录制的转换结果，不接收新 URL。完整转换需要在本地启动 Node server。本项目为早期版本，不保证每个网站都能完整交互。
 
 ## 本地运行

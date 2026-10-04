@@ -2,6 +2,8 @@
   "name": "pixelweb-performance-preview",
   "main": "worker.mjs",
   "compatibility_date": "2026-10-03",
+  "assets": { "directory": "../public", "binding": "ASSETS", "run_worker_first": true },
+  "vars": { "PUBLIC_DEMO": "false" },
   "containers": [{ "class_name": "PixelWebContainer", "image": "../Dockerfile", "max_instances": 1, "instance_type": "standard-1" }],
   "durable_objects": { "bindings": [{ "name": "PIXELWEB", "class_name": "PixelWebContainer" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PixelWebContainer"] }]
