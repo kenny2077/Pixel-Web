@@ -5,7 +5,7 @@ export class PixelWebContainer extends Container {
   defaultPort = 4173;
   pingEndpoint = '/health';
   sleepAfter = '2m';
-  envVars = { PIXELWEB_PUBLIC_SERVICE: '1' };
+  envVars = { PIXELWEB_PUBLIC_SERVICE: '1', PIXELWEB_SESSION_MODE: 'gateway' };
 
   async fetch(request) {
     const allowed = await this.ctx.storage.transaction(async storage => {

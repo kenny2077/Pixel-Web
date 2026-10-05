@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: pixel-web
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: PIXELWEB_PUBLIC_SERVICE
+        value: '1'
+      - key: PIXELWEB_SESSION_MODE
+        value: cookie
+      - key: PIXELWEB_MAX_CAPTURES
+        value: '1'
+      - key: PIXELWEB_SESSION_MS
+        value: '300000'
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=192

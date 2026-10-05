@@ -2,11 +2,25 @@ import ctypes
 import json
 import pathlib
 import sys
+import math
 import pypdfium2 as pdfium
 import pypdfium2.raw as raw
 
 source, output, width = sys.argv[1], pathlib.Path(sys.argv[2]), float(sys.argv[3])
 with pdfium.PdfDocument(source) as document:
+    # Reject oversized documents before allocating any raster. Never truncate pages.
+    total_pixels = 0
+    for index in range(len(document)):
+        page = document[index]
+        w, h = page.get_size()
+        if not (math.isfinite(w) and math.isfinite(h) and w > 0 and h > 0):
+            raise ValueError('Invalid PDF page size')
+        scale = min(2, width / w)
+        pixels = math.ceil(w * scale) * math.ceil(h * scale)
+        total_pixels += pixels
+        page.close()
+        if pixels > 8_000_000 or total_pixels > 100_000_000 or len(document) > 100:
+            raise ValueError('PDF exceeds the rendering limit; use the original document')
     pages = []
     for index in range(len(document)):
         page = document[index]

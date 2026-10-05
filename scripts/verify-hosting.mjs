@@ -3,7 +3,7 @@ import { startServer } from '../server.mjs';
 import { closeBrowser } from '../lib/capture.mjs';
 
 process.env.PIXELWEB_PUBLIC_SERVICE = '1';
-const server = await startServer({ port: 0, publicService: true });
+const server = await startServer({ port: 0, publicService: true, sessionMode: 'gateway' });
 const base = `http://127.0.0.1:${server.address().port}`;
 const first = '11111111-1111-1111-1111-111111111111';
 const other = '22222222-2222-2222-2222-222222222222';

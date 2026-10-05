@@ -40,7 +40,7 @@ test('conversion API rejects private URLs before browser work and rejects cross-
 });
 
 test('hosted API requires a gateway session while health checks remain available', async () => {
-  const server = await serverModule.startServer({ port: 0, publicService: true });
+  const server = await serverModule.startServer({ port: 0, publicService: true, sessionMode: 'gateway' });
   try {
     const base = `http://127.0.0.1:${server.address().port}`;
     assert.equal((await fetch(`${base}/health`)).status, 200);

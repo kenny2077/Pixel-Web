@@ -3,15 +3,14 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, randomBytes } from 'node:crypto';
+import { cookieSession } from './lib/session.mjs';
 import { captureWebsite, transformArtwork, closeBrowser } from './lib/capture.mjs';
 import { normalizeUrl } from './lib/urls.mjs';
 import { renderOriginal, renderPreview } from './lib/preview.mjs';
 import { performInteraction } from './lib/interaction.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
-const captures = new Map();
-let busy = false;
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.ttf': 'font/ttf', '.svg': 'image/svg+xml' };
 const optionsFrom = input => ({ cell: Math.max(2, Math.min(8, Math.round(Number(input.cell) || 4))), colors: Math.max(8, Math.min(32, Math.round(Number(input.colors) || 24))), dither: !!input.dither, textMode: ['headings', 'all', 'original'].includes(input.textMode) ? input.textMode : 'all' });
 const json = (response, status, value) => { response.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); response.end(JSON.stringify(value)); };
@@ -34,15 +33,30 @@ async function styleCapture(entry, options) {
 
 const previewUrl = (id, options) => `/preview/${id}?${new URLSearchParams({ cell: options.cell, colors: options.colors, dither: options.dither ? '1' : '0', textMode: options.textMode })}`;
 
-export async function startServer({ port = Number(process.env.PORT) || 4173, host = process.env.HOST || '127.0.0.1', publicService = process.env.PIXELWEB_PUBLIC_SERVICE === '1' } = {}) {
+export async function startServer({ port = Number(process.env.PORT) || 4173, host = process.env.HOST || '127.0.0.1', publicService = process.env.PIXELWEB_PUBLIC_SERVICE === '1', sessionMode = process.env.PIXELWEB_SESSION_MODE || 'cookie', maxCaptures = Number(process.env.PIXELWEB_MAX_CAPTURES) || 3, sessionMs = Number(process.env.PIXELWEB_SESSION_MS) || 600_000 } = {}) {
+  const captures = new Map(), sessionKey = randomBytes(32);
+  let busy = false;
+  const removeCapture = async id => {
+    const entry = captures.get(id);
+    if (!entry) return;
+    captures.delete(id); clearTimeout(entry.expiry);
+    await entry.capture.session?.close();
+  };
   const server = createServer(async (request, response) => {
     response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Referrer-Policy', 'no-referrer');
     try {
       const url = new URL(request.url, 'http://127.0.0.1');
       if (url.pathname === '/health' && request.method === 'GET') return json(response, 200, { status: 'ok' });
-      const owner = publicService ? request.headers['x-pixelweb-session'] : null;
-      if (publicService && !/^[a-f\d-]{36}$/.test(owner || '')) return json(response, 403, { error: 'Use the public Pixel Web page to start a session.' });
+      let owner = null;
+      if (publicService && sessionMode === 'gateway') {
+        owner = request.headers['x-pixelweb-session'];
+        if (!/^[a-f\d-]{36}$/.test(owner || '')) return json(response, 403, { error: 'Use the public Pixel Web page to start a session.' });
+      } else if (publicService) {
+        const session = cookieSession(request.headers.cookie, sessionKey);
+        owner = session.owner;
+        if (session.token) response.setHeader('Set-Cookie', `pixelweb_session=${session.token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400${process.env.RENDER === 'true' ? '; Secure' : ''}`);
+      }
       if (request.method === 'POST') {
         const origin = request.headers.origin;
         if (origin && ![`http://${request.headers.host}`, `https://${request.headers.host}`].includes(origin)) return json(response, 403, { error: 'Use the PixelWeb page to convert a website.' });
@@ -53,19 +67,19 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
           busy = true;
           const started = performance.now();
           try {
+            while (captures.size >= Math.max(1, maxCaptures)) await removeCapture(captures.keys().next().value);
             const width = Math.max(320, Math.min(1920, Number(input.width) || (input.viewport === 'mobile' ? 390 : 1280)));
             const height = Math.round(Math.max(300, Math.min(1800, Number(input.height) || 800)));
             const capture = await captureWebsite(sourceUrl, width, { live: true, height });
             const id = randomUUID();
             const entry = { capture, styles: new Map(), owner };
             const options = optionsFrom(input);
-            const transformed = await styleCapture(entry, options);
-            while (captures.size >= 3) {
-              const oldest = captures.keys().next().value;
-              await captures.get(oldest).capture.session?.close();
-              captures.delete(oldest);
-            }
+            let transformed;
+            try { transformed = await styleCapture(entry, options); }
+            catch (error) { await capture.session?.close(); throw error; }
             captures.set(id, entry);
+            entry.expiry = setTimeout(() => removeCapture(id).catch(() => {}), sessionMs);
+            entry.expiry.unref();
             const snapshot = capture.snapshot;
             return json(response, 200, { id, title: snapshot.title, url: snapshot.url, width, viewportHeight: snapshot.viewportHeight, height: snapshot.height, elements: snapshot.elements, images: transformed.html.match(/data-pixel-image=/g)?.length || 0, backgrounds: capture.backgroundSources.size, warnings: capture.warnings, timings: { ...capture.timings, transformMs: transformed.transformMs, totalMs: Math.round(performance.now() - started) }, previewUrl: previewUrl(id, options), originalUrl: `/original/${id}` });
           } finally { busy = false; }
@@ -126,6 +140,7 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
       response.end(data);
     } catch (error) { json(response, 400, { error: error.message || 'The website could not be converted. Try another public URL.' }); }
   });
+  server.once('close', () => { for (const id of captures.keys()) removeCapture(id).catch(() => {}); });
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, host, resolve); });
   return server;
 }
