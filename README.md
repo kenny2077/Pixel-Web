@@ -3,12 +3,12 @@
 <p align="center">
   <a href="https://github.com/kenny2077/Pixel-Web/actions/workflows/ci.yml"><img src="https://github.com/kenny2077/Pixel-Web/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-ededed?labelColor=444444" alt="MIT license"></a>
-  <a href="https://kenny2077.github.io/Pixel-Web/">View demo</a> · <a href="#quick-start">Quick start</a> · <a href="README.zh-CN.md">中文</a>
+  <a href="https://kenny2077.github.io/Pixel-Web/">Open Pixel Web</a> · <a href="#quick-start">Quick start</a> · <a href="README.zh-CN.md">中文</a>
 </p>
 
 Turn a public website into a full-page, clickable pixel-style preview. Keep its layout, recognizable images and working controls. Conversion uses image algorithms and pixel fonts, with no AI calls.
 
-**[Explore the recorded comparison](https://kenny2077.github.io/Pixel-Web/)** or run the converter locally. The demo shows captured results; it does not accept new URLs. Pixel Web is an early release, with a tested core and documented compatibility limits.
+**[Open the interactive demo](https://pixel-web-a3t7.onrender.com/)** or run the converter locally. The demo opens Wikipedia Pixel art and accepts public URLs. It runs on Render Free: cold starts can take about a minute and large pages may exceed the available memory. Pixel Web is an early release with documented compatibility limits.
 
 ## What it does
 
@@ -63,7 +63,8 @@ Conversion time depends on the source website, browser startup, page length and 
 | Platform | Role |
 | --- | --- |
 | **GitHub Actions** | Install from the lockfile and run automated tests. Not an interactive conversion server. |
-| **GitHub Pages** | Serve the lightweight recorded comparison and setup guide. No browser backend. |
+| **GitHub Pages** | Redirect to the live Render service. |
+| **Render Free** | Run the full converter with signed anonymous sessions. One retained page, five-minute retention; sleeps after inactivity. |
 | **Local Node server** | Run the full converter and retained source sessions. |
 | **Cloudflare Container** | Experimental deployment configuration in `cloudflare/`. Requires Workers Paid. Not deployed or performance-validated. |
 
@@ -71,7 +72,7 @@ Cloudflare may improve capacity or network proximity, but it does not remove sou
 
 ## Compatibility and limits
 
-- One conversion or action runs at a time. Up to three source sessions are retained, each for ten minutes. A restart ends sessions.
+- One conversion or action runs at a time. Local defaults retain three source sessions for ten minutes. The free public service retains one page for five minutes; another visitor converting a page can expire yours. A restart ends sessions.
 - Initial source contexts have a 55-second deadline; interaction refreshes have a 50-second deadline. Readiness waits are bounded, so exceptionally late content can still be missed.
 - Infinite feeds cannot have a finite whole-page result. The converter traverses the page within a bounded preparation window.
 - Cross-origin iframe apps, WebSockets, uploads, downloads and device permissions are not fully proxied. CAPTCHA restrictions are not bypassed. Account and payment workflows are not verified.

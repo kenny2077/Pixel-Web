@@ -1,5 +1,7 @@
 # Hosting the demo and converter
 
+**Current deployment (2026-10-05):** [Render Free](https://pixel-web-a3t7.onrender.com/) runs the interactive converter. GitHub Pages redirects there. See [configuration and measured limits](render.md). The recorded showcase described below is historical.
+
 ## GitHub Pages: recorded showcase
 
 The `demo/` directory is a small static site. Its Original/Pixel switch displays real, pre-recorded screenshots. It makes no source-site requests and no AI calls. It is useful for seeing the visual result, but cannot convert a pasted URL.

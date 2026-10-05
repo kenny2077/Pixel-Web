@@ -4,7 +4,7 @@ Pixel Web loads arbitrary public websites in a separate browser context. Source 
 
 ## Supported deployment boundary
 
-The default server binds to `127.0.0.1`. Keep it local. An experimental hosted instance must have authentication and controlled access. The Cloudflare Worker fails closed without its preview authentication secret.
+The local default binds to `127.0.0.1`. The Render demo enables public-service mode with signed anonymous cookies, public-IP-pinned source connections and bounded capture retention. It is a low-traffic demonstration, not a security-audited general-purpose proxy. Cloudflare gateway mode is separate and remains undeployed.
 
 Private and reserved addresses are checked, WebSockets are blocked, and source deadlines bound work. These controls do not make the converter a hardened public proxy. DNS is checked but not pinned; a source can also run scripts and initiate public network requests. Do not expose an unauthenticated instance or use it for sensitive account, payment or administrative workflows.
 
