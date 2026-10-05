@@ -16,6 +16,8 @@ This is a conservative application admission limit, not a provider billing hard 
 
 The gateway assigns a random HttpOnly session cookie and replaces the session header before forwarding. Capture entries store the owner; another session cannot retrieve or interact with that entry. Local operation remains unchanged. Public access is disabled by default (`PUBLIC_DEMO=false`). The existing private preview credential remains required until public mode is explicitly enabled after verification.
 
+Local verification: `node scripts/verify-hosting.mjs` converts a public HTTPS fixture through the hosted network path, then checks two gateway sessions. Cross-session preview/original reads, interactions and style requests are rejected. This checks the Node backend; the same flow still needs verification through the deployed Worker.
+
 ## Remaining launch checks
 
 - Enable the Workers Paid base plan in the owner's account without enabling additional paid products.
