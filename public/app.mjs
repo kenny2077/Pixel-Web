@@ -3,7 +3,7 @@ let capture = null, version = 'pixel', pending = false, styleTimer, savedScroll 
 const visited = [];
 const presets = { balanced: {cell:2,colors:32,dither:false}, bold:{cell:4,colors:16,dither:false}, soft:{cell:2,colors:32,dither:true} };
 const options = () => ({cell:Number($('#cell').value),colors:Number($('#colors').value),dither:$('#dither').checked,textMode:$('input[name="text-mode"]:checked').value});
-function message(text,error=false){$('#status').textContent=text;$('#status').classList.toggle('error',error);}
+function message(text,error=false){$('#status').textContent=text;$('#status').title=text;$('#status').classList.toggle('error',error);}
 function busy(value,kind='convert'){
   pending=value;$('#convert').disabled=value;$('#loading-state').hidden=!value||kind==='scroll';
   for(const control of document.querySelectorAll('.settings input,.settings button'))control.disabled=value;
@@ -13,13 +13,14 @@ function busy(value,kind='convert'){
 }
 async function post(path,body){
   const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const result=await response.json();if(!response.ok)throw new Error(result.error||'This website could not be loaded.');return result;
+  const result=await response.json();if(!response.ok)throw Object.assign(new Error(result.error||'This website could not be loaded.'),{code:result.code,sourceUrl:result.sourceUrl});return result;
 }
 function showPage(scroll=0){
   if(!capture)return;savedScroll=scroll;
   $('#preview-frame').src=version==='pixel'?capture.previewUrl:capture.originalUrl;
   $('#frame-wrap').hidden=false;$('#empty-state').hidden=true;document.body.classList.add('has-page');
   $('#capture-title').textContent=capture.title;$('#open-preview').href=`/?url=${encodeURIComponent(capture.url)}`;$('#open-preview').setAttribute('aria-disabled','false');
+  $('#open-preview').textContent='Open page';
   $('#back').disabled=visited.length===0;updateVersion();
 }
 async function convert(url=$('#website-url').value.trim(),remember=true){
@@ -34,7 +35,7 @@ async function convert(url=$('#website-url').value.trim(),remember=true){
     history.replaceState(null,'',`/?url=${encodeURIComponent(capture.url)}`);
     $('#timing').textContent=`${(capture.timings.totalMs/1000).toFixed(2)} s`;
     message(capture.warnings.length?`Page loaded. ${capture.warnings.length} artwork elements need attention.`:'Page ready. Links continue in pixel mode.');
-  }catch(error){message(error.message,true);}
+  }catch(error){message(error.message,true);if(error.code==='SOURCE_ACCESS_DENIED'&&error.sourceUrl){$('#open-preview').href=error.sourceUrl;$('#open-preview').textContent='Open original';$('#open-preview').setAttribute('aria-disabled','false');}}
   finally{busy(false);}
 }
 async function restyle(){

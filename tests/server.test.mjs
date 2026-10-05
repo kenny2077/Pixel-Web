@@ -49,3 +49,20 @@ test('hosted API requires a gateway session while health checks remain available
     assert.equal(result.status, 404);
   } finally { await new Promise(resolve => server.close(resolve)); }
 });
+
+test('a source access refusal offers the original website rather than an empty retry loop', async () => {
+  const server = await serverModule.startServer({ port: 0 });
+  const context = await (await getBrowser()).newContext();
+  try {
+    const base = `http://127.0.0.1:${server.address().port}`;
+    const sourceUrl = 'https://www.linkedin.com/in/kaiyi-guo-917462290/';
+    await context.route(`${base}/api/convert`, route => route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ error: 'This website denied access to the converter (HTTP 999).', code: 'SOURCE_ACCESS_DENIED', sourceStatus: 999, sourceUrl }) }));
+    const page = await context.newPage();
+    await page.goto(`${base}/?url=${encodeURIComponent(sourceUrl)}`);
+    const link = page.getByRole('link', { name: 'Open original', exact: true });
+    await link.waitFor();
+    assert.equal(await link.getAttribute('href'), sourceUrl);
+    assert.equal(await link.getAttribute('aria-disabled'), 'false');
+    assert.ok(await page.getByRole('button', { name: 'Convert', exact: true }).isEnabled());
+  } finally { await context.close(); await closeBrowser(); await new Promise(resolve => server.close(resolve)); }
+});

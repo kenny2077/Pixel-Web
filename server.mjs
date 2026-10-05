@@ -138,7 +138,7 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
       try { data = await readFile(path); } catch { return json(response, 404, { error: 'File not found.' }); }
       response.writeHead(200, { 'Content-Type': types[extension], 'Cache-Control': 'no-cache', 'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; frame-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'" });
       response.end(data);
-    } catch (error) { json(response, 400, { error: error.message || 'The website could not be converted. Try another public URL.' }); }
+    } catch (error) { json(response, 400, { error: error.message || 'The website could not be converted. Try another public URL.', ...(error.code?.startsWith('SOURCE_') ? { code: error.code, sourceStatus: error.sourceStatus, sourceUrl: error.sourceUrl } : {}) }); }
   });
   server.once('close', () => { for (const id of captures.keys()) removeCapture(id).catch(() => {}); });
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, host, resolve); });
