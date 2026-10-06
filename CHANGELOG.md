@@ -6,12 +6,18 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 
 ### Features
 
+- Public Cloud Run demo (1 vCPU, 2 GiB, at most one instance, scales to zero).
+- The converter opens with a saved Wikipedia conversion and starts Chromium in the background; links and controls load the live page.
 - Public Render Free demo with HMAC-signed anonymous sessions, per-visitor capture ownership and one retained page.
 - Hosted source connections are pinned to checked public addresses.
 - Source refusals (HTTP 403/999 and 429) return structured errors with a link to the original site.
 
 ### Performance
 
+- Scroll preparation waits only while the page is still changing: Wikipedia preparation fell from 4.4 to 1.9 seconds locally.
+- Snapshots omit declarations the preview reproduces from inheritance or browser defaults: Wikipedia's snapshot HTML fell from 6.3 MB to 2.3 MB with identical rendering on the sites checked.
+- Text responses are gzip-compressed; the Docker image installs only Chromium's headless shell (1.0 GB to 0.37 GB compressed).
+- Chromium starts at boot and after `/api/warm`, not on the first conversion.
 - Batch interaction metadata writes, serialize CSS declarations in one pass and skip resampling for one-pixel image cells.
 
 ### Documentation

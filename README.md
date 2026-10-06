@@ -5,14 +5,14 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-ededed?labelColor=444444" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/node-%E2%89%A522-ededed?labelColor=444444" alt="Node.js 22 or newer">
   <br>
-  <a href="https://pixel-web-a3t7.onrender.com/"><b>Open the demo</b></a> · <a href="#quick-start">Quick start</a> · <a href="#how-it-works">How it works</a> · <a href="README.zh-CN.md">中文</a>
+  <a href="https://pixel-web-803742923007.us-central1.run.app/"><b>Open the demo</b></a> · <a href="#quick-start">Quick start</a> · <a href="#how-it-works">How it works</a> · <a href="README.zh-CN.md">中文</a>
 </p>
 
 Turn a public website into a full-page, clickable pixel-style preview. Keep its layout, recognizable images and working controls. Conversion uses image algorithms and pixel fonts, with no AI calls.
 
-**[Open the interactive demo](https://pixel-web-a3t7.onrender.com/)** or run the converter locally. The demo opens Wikipedia Pixel art and accepts public URLs. It runs on Render Free: cold starts can take about a minute and large pages may exceed the available memory. Pixel Web is an early release with documented compatibility limits.
+**[Open the interactive demo](https://pixel-web-803742923007.us-central1.run.app/)** or run the converter locally. The demo opens with a saved conversion of Wikipedia's Pixel art article and accepts public URLs. It runs on Google Cloud Run and scales to zero, so the first request after a quiet period starts a new instance. Pixel Web is an early release with documented compatibility limits.
 
-<a href="https://pixel-web-a3t7.onrender.com/"><img src="docs/assets/wikipedia-pixel-art.png" alt="Pixel Web showing Wikipedia's Pixel art article: the table of contents, article text and Appearance panel in pixel type, with the cat portrait re-rendered as pixel art." width="100%"></a>
+<a href="https://pixel-web-803742923007.us-central1.run.app/"><img src="docs/assets/wikipedia-pixel-art.png" alt="Pixel Web showing Wikipedia's Pixel art article: the table of contents, article text and Appearance panel in pixel type, with the cat portrait re-rendered as pixel art." width="100%"></a>
 
 <p align="center"><sub>Wikipedia's <i>Pixel art</i> article in Pixel Web. Layout, links and selectable text are kept; the artwork is re-rendered with a reduced palette.</sub></p>
 
@@ -65,13 +65,14 @@ Artwork goes through Lanczos resampling, weighted median-cut quantization and in
 
 ## Performance and hosting
 
-Conversion time depends mostly on the source site and on available CPU. A repeated-image fixture improved from 1,650 ms to 79 ms after deduplication; that is **not** a whole-page guarantee. See [measurement method and trade-offs](docs/performance.md) and [deployed latency samples](docs/access-and-latency.md).
+Conversion time depends mostly on the source site and on available CPU. On Cloud Run with 1 vCPU, a warm conversion of Wikipedia's Pixel art article took 6.8–8.6 seconds; the same page took about 45 seconds on Render Free's 0.1 CPU. These are single samples, not guarantees. See [Cloud Run deployment and measurements](docs/cloud-run.md), [measurement method](docs/performance.md) and [earlier Render samples](docs/access-and-latency.md).
 
 | Platform | Role |
 | --- | --- |
 | **Local Node server** | Full converter with retained source sessions. The reference setup. |
-| **Render Free** | Public demo with signed anonymous sessions. One retained page, five-minute retention; sleeps after inactivity. |
-| **GitHub Pages** | Redirects to the Render demo. |
+| **Google Cloud Run** | Public demo: 1 vCPU, 2 GiB, one instance at most, scales to zero. Signed anonymous sessions; two retained pages, five-minute retention. |
+| **Render Free** | Earlier demo, kept as a fallback. 0.1 CPU and 512 MB; sleeps after inactivity and wakes in about 40 seconds. |
+| **GitHub Pages** | Redirects to the Cloud Run demo. |
 | **GitHub Actions** | Lockfile install and automated tests only. |
 | **Cloudflare Container** | Experimental configuration in `cloudflare/`. Requires Workers Paid; not deployed or measured. |
 
@@ -79,7 +80,7 @@ Changing provider does not remove source-page waits or source-site refusals. Com
 
 ## Compatibility and limits
 
-- One conversion or action runs at a time. Locally, three source sessions are kept for ten minutes. The public demo keeps one page for five minutes, so another visitor's conversion can replace yours. A restart ends all sessions.
+- One conversion or action runs at a time. Locally, three source sessions are kept for ten minutes. The public demo keeps two pages for five minutes, so other visitors' conversions can replace yours. A restart or scale-down ends all sessions.
 - Initial captures have a 55-second deadline; interaction refreshes have 50 seconds. Readiness waits are bounded, so very late content can be missed.
 - Infinite feeds have no finite whole page. The converter traverses them within a bounded preparation window.
 - Cross-origin iframe apps, WebSockets, uploads, downloads and device permissions are not fully proxied. CAPTCHAs and login walls are not bypassed. Account and payment flows are not verified.

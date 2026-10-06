@@ -4,11 +4,11 @@
 
 把公开网站转换为完整、可点击的 pixel-style preview。保留原有 layout、清晰图片和受支持的 controls。转换使用 image algorithms 和 pixel fonts，不调用 AI。
 
-[打开交互 demo](https://kenny2077.github.io/Pixel-Web/) · [English README](README.md) · [贡献指南](CONTRIBUTING.md)
+[打开交互 demo](https://pixel-web-803742923007.us-central1.run.app/) · [English README](README.md) · [贡献指南](CONTRIBUTING.md)
 
-Demo 使用 Render Free，默认打开 Wikipedia Pixel art，也接受公开 URL。休眠后 cold start 可能需要约一分钟，复杂页面可能超出免费实例内存。本项目为早期版本，不保证每个网站都能完整交互。
+Demo 运行在 Google Cloud Run，打开时先显示 Wikipedia Pixel art 的已保存转换结果，也接受公开 URL。服务空闲后会缩容到零，之后的第一次请求需要启动新实例。本项目为早期版本，不保证每个网站都能完整交互。
 
-<a href="https://pixel-web-a3t7.onrender.com/"><img src="docs/assets/wikipedia-pixel-art.png" alt="Pixel Web 中的 Wikipedia Pixel art 条目：目录、正文和 Appearance 面板使用像素字体，猫的肖像被重新渲染为像素画。" width="100%"></a>
+<a href="https://pixel-web-803742923007.us-central1.run.app/"><img src="docs/assets/wikipedia-pixel-art.png" alt="Pixel Web 中的 Wikipedia Pixel art 条目：目录、正文和 Appearance 面板使用像素字体，猫的肖像被重新渲染为像素画。" width="100%"></a>
 
 <p align="center"><sub>Pixel Web 转换后的 Wikipedia <i>Pixel art</i> 条目。保留 layout、links 和可选择文字；图片以较少颜色重新渲染。</sub></p>
 
@@ -65,8 +65,8 @@ npm run check:repo
 npm run verify
 ```
 
-GitHub Actions 用于测试。GitHub Pages 跳转到 Render 交互服务。Cloudflare Container 配置已准备，但尚未部署或验证速度；需要 Workers Paid plan。首次加载仍受原网站网络影响，没有固定的速度保证。
+GitHub Actions 用于测试。GitHub Pages 跳转到 Cloud Run 交互服务；Render Free 保留为较慢的备用部署。Cloudflare Container 配置已准备，但尚未部署或验证速度；需要 Workers Paid plan。首次加载仍受原网站网络影响，没有固定的速度保证。
 
-当前一次只执行一个转换或操作。本地默认保留三个 source sessions，每个十分钟。免费公开服务保留一个页面，五分钟后过期；其他访客转换新页面也会替换它。WebSockets、复杂 iframe、上传下载和账号支付流程尚未完整支持。完整限制见 [English README](README.md#compatibility-and-limits) 和 [SECURITY.md](SECURITY.md)。
+当前一次只执行一个转换或操作。本地默认保留三个 source sessions，每个十分钟。公开服务保留两个页面，五分钟后过期；其他访客转换新页面也可能替换它。WebSockets、复杂 iframe、上传下载和账号支付流程尚未完整支持。完整限制见 [English README](README.md#compatibility-and-limits) 和 [SECURITY.md](SECURITY.md)。
 
 代码使用 [MIT license](LICENSE)。字体与录制网站保留各自许可。见 [第三方说明](THIRD_PARTY_NOTICES.md)。

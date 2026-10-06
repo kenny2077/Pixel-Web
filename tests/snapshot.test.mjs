@@ -59,3 +59,29 @@ test('sprite backgrounds keep their positioning and share one inline image', () 
   assert.equal((html.match(/data:image\/png;base64,/g) || []).length, 1);
   assert.ok(!html.includes('background-size:100% 100%'));
 });
+
+test('omitted default declarations render the same computed styles as the source', async () => {
+  const browser = await chromium.launch({ headless: true, ...(process.platform === 'darwin' ? { channel: 'chrome' } : {}) });
+  try {
+    const page = await browser.newPage({ viewport: { width: 960, height: 720 } });
+    // Each case has a value that equals either its parent or a browser default in some other context.
+    await page.setContent(`<!doctype html><html><head><style>
+      body{font:16px/1.4 Georgia,serif;color:#222}.small p{font-size:12.8px;margin:16px 0}cite.plain{font-style:normal}
+      pre.wrap{white-space:normal}abbr{text-decoration:none}ul ul{list-style-type:disc}h2{font-size:16px;font-weight:400}
+    </style></head><body><main>
+      <div class="small"><p id="p">Author margin equal to the default at another size.</p></div>
+      <p><cite id="cite" class="plain">Upright citation</cite> and <cite id="italic">italic citation</cite></p>
+      <pre id="pre" class="wrap">normal wrapping</pre><abbr id="abbr" title="Abbreviation">ABBR</abbr>
+      <ul><li>Outer<ul id="nested"><li>Inner</li></ul></li></ul><h2 id="h2">Plain heading</h2>
+      <label>Search <input id="search" style="border:2px inset rgb(118, 118, 118)"></label>
+    </main></body></html>`);
+    const ids = ['p', 'cite', 'italic', 'pre', 'abbr', 'nested', 'h2', 'search'];
+    const properties = ['margin-bottom', 'font-style', 'white-space', 'text-decoration-line', 'list-style-type', 'font-size', 'font-weight', 'border-top-style', 'color', 'line-height'];
+    const read = () => page.evaluate(({ ids, properties }) => ids.map(id => properties.map(property => getComputedStyle(document.getElementById(id)).getPropertyValue(property))), { ids, properties });
+    const source = await read();
+    const snapshot = await capture.snapshotPage(page);
+    await page.setContent(preview.renderPreview(snapshot, { textMode: 'original' }));
+    assert.deepEqual(await read(), source);
+    assert.ok(snapshot.html.length < 12_000, `snapshot is ${snapshot.html.length} characters`);
+  } finally { await browser.close(); }
+});

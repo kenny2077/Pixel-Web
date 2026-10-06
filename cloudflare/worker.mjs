@@ -34,7 +34,7 @@ export default {
     const origin = request.headers.get('Origin');
     if (origin && origin !== new URL(request.url).origin) return new Response('Invalid origin', { status: 403 });
     const path = new URL(request.url).pathname;
-    if (!path.startsWith('/api/') && !/^\/(preview|original)\//.test(path)) return env.ASSETS.fetch(request);
+    if (!path.startsWith('/api/') && !/^\/(preview|original|showcase)\//.test(path)) return env.ASSETS.fetch(request);
     const supplied = request.headers.get('Cookie')?.match(/(?:^|;\s*)pixelweb_session=([a-f\d-]{36})(?:;|$)/)?.[1];
     const session = supplied || crypto.randomUUID();
     const headers = new Headers(request.headers);

@@ -18,6 +18,7 @@ async function post(path,body){
 function showPage(scroll=0){
   if(!capture)return;savedScroll=scroll;
   $('#preview-frame').src=version==='pixel'?capture.previewUrl:capture.originalUrl;
+  $('#preview-frame').style.maxWidth=capture.showcase?`${capture.width}px`:'';
   $('#frame-wrap').hidden=false;$('#empty-state').hidden=true;document.body.classList.add('has-page');
   $('#capture-title').textContent=capture.title;$('#open-preview').href=`/?url=${encodeURIComponent(capture.url)}`;$('#open-preview').setAttribute('aria-disabled','false');
   $('#open-preview').textContent='Open page';
@@ -39,6 +40,7 @@ async function convert(url=$('#website-url').value.trim(),remember=true){
   finally{busy(false);}
 }
 async function restyle(){
+  if(capture?.showcase)return convert(capture.url,false);
   if(!capture||pending)return;busy(true,'style');
   try{
     const result=await post('/api/style',{id:capture.id,...options()});capture.previewUrl=result.previewUrl;version='pixel';showPage(savedScroll);
@@ -46,6 +48,7 @@ async function restyle(){
   }catch(error){message(error.message,true);}finally{busy(false);}
 }
 async function interact(action){
+  if(capture?.showcase){if(action.kind!=='scroll'){message('Loading the live page so its controls respond…');convert(capture.url,false);}return;}
   if(!capture||pending)return;
   if(action.kind==='scroll'){
     if(capture.lastScrollHeight===action.value){$('#preview-frame').contentWindow.postMessage({type:'pixelweb',action:'ready'},'*');return;}
@@ -72,19 +75,36 @@ function updateControls(){$('#cell-value').value=`${$('#cell').value} px`;$('#co
 $('#convert-form').addEventListener('submit',event=>{event.preventDefault();convert();});
 $('#back').addEventListener('click',()=>{if(!pending&&visited.length)convert(visited.pop(),false);});
 $('#settings-toggle').addEventListener('click',()=>{const panel=$('#settings-panel');panel.hidden=!panel.hidden;$('#settings-toggle').setAttribute('aria-expanded',String(!panel.hidden));});
-for(const [id,value]of[['pixel-view','pixel'],['original-view','original']])$(`#${id}`).addEventListener('click',()=>{version=value;showPage(savedScroll);});
+for(const [id,value]of[['pixel-view','pixel'],['original-view','original']])$(`#${id}`).addEventListener('click',async()=>{
+  if(capture?.showcase){if(value==='pixel')return;await convert(capture.url,false);if(capture?.showcase)return;}
+  version=value;showPage(savedScroll);
+});
 for(const button of document.querySelectorAll('[data-preset]'))button.addEventListener('click',()=>{
   const preset=presets[button.dataset.preset];$('#cell').value=preset.cell;$('#colors').value=preset.colors;$('#dither').checked=preset.dither;
   for(const sibling of document.querySelectorAll('[data-preset]')){const selected=sibling===button;sibling.classList.toggle('selected',selected);sibling.setAttribute('aria-pressed',String(selected));}updateControls();restyle();
 });
 for(const input of document.querySelectorAll('.settings input'))input.addEventListener('input',()=>{updateControls();clearTimeout(styleTimer);styleTimer=setTimeout(restyle,200);});
-const initial=new URLSearchParams(location.search).get('url')||'https://en.wikipedia.org/wiki/Pixel_art';$('#website-url').value=initial;convert(initial);
+// Without a requested URL, show a saved conversion at once and start Chromium in the background.
+let showcaseInfo=null;
+async function showcase(){
+  try{
+    showcaseInfo??=await (await fetch('/showcase/pixel-art.json')).json();
+    const variant=$('#preview-stage').clientWidth<700?showcaseInfo.mobile:showcaseInfo.desktop;
+    capture={showcase:true,url:showcaseInfo.url,title:showcaseInfo.title,previewUrl:`/showcase/${variant.file}`,width:variant.width,viewportHeight:variant.viewportHeight};
+    $('#website-url').value=capture.url;version='pixel';showPage();
+    $('#timing').textContent='Saved example';$('#capture-title').textContent=`${capture.title} · Select Convert or click the page to load it live`;
+  }catch{convert(showcaseInfo?.url||'https://en.wikipedia.org/wiki/Pixel_art');}
+}
+const initial=new URLSearchParams(location.search).get('url');
+if(initial){$('#website-url').value=initial;convert(initial);}
+else{fetch('/api/warm').catch(()=>{});showcase();}
 let resizeTimer;
 window.addEventListener('resize',()=>{
   clearTimeout(resizeTimer);
   resizeTimer=setTimeout(async()=>{
     const width=$('#preview-stage').clientWidth;
     const height=$('#preview-stage').clientHeight;
+    if(capture?.showcase){if(!pending&&(width<700)!==(capture.width<700))showcase();return;}
     if(!capture||pending||(Math.abs(width-capture.width)<24&&Math.abs(height-capture.viewportHeight)<24))return;
     busy(true,'style');
     try{Object.assign(capture,await post('/api/style',{id:capture.id,width,height,...options()}));showPage(savedScroll);message('Page resized.');}

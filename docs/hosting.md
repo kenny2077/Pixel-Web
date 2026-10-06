@@ -1,6 +1,6 @@
 # Hosting the demo and converter
 
-**Current deployment (2026-10-05):** [Render Free](https://pixel-web-a3t7.onrender.com/) runs the interactive converter. GitHub Pages redirects there. See [configuration and measured limits](render.md). The recorded showcase described below is historical.
+**Current deployment (2026-10-06):** [Google Cloud Run](https://pixel-web-803742923007.us-central1.run.app/) runs the interactive converter and GitHub Pages redirects there. See [Cloud Run configuration and measurements](cloud-run.md). The earlier [Render Free deployment](render.md) remains available as a slower fallback. The recorded showcase described below is historical.
 
 ## GitHub Pages: recorded showcase
 

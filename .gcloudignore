@@ -1,0 +1,15 @@
+# Upload only what the Dockerfile copies.
+.git
+.github
+.cache
+.venv
+.impeccable
+node_modules
+artifacts
+cloudflare
+demo
+docs
+tests
+scripts
+*.md
+!requirements-*.txt

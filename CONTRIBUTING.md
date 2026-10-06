@@ -18,7 +18,8 @@ Keep the converter universal. Fix layout or capture rules at their source; avoid
 | `lib/interaction.mjs` | Forwarded source controls and change detection |
 | `public/` | Converter shell and preview bridge |
 | `tests/` | Synthetic regression fixtures |
-| `demo/` | Static, recorded GitHub Pages showcase |
+| `demo/` | GitHub Pages redirect to the hosted demo |
+| `public/showcase/` | Saved Wikipedia conversion shown before a live one; rebuild with `node scripts/build-showcase.mjs` after changing capture or preview output |
 
 ## Commits and pull requests
 
