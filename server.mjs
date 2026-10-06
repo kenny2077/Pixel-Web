@@ -160,7 +160,7 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
       if (types[extension].startsWith('text/') || extension === '.svg') return sendText(request, response, headers, data);
       response.writeHead(200, headers);
       response.end(data);
-    } catch (error) { json(response, 400, { error: error.message || 'The website could not be converted. Try another public URL.', ...(error.code?.startsWith('SOURCE_') ? { code: error.code, sourceStatus: error.sourceStatus, sourceUrl: error.sourceUrl } : {}) }); }
+    } catch (error) { json(response, 400, { error: error.message || 'The website could not be converted. Try another public URL.', ...(String(error.code ?? '').startsWith('SOURCE_') ? { code: error.code, sourceStatus: error.sourceStatus, sourceUrl: error.sourceUrl } : {}) }); }
   });
   server.once('close', () => { for (const id of captures.keys()) removeCapture(id).catch(() => {}); });
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, host, resolve); });
