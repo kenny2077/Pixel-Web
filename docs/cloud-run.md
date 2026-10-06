@@ -44,8 +44,8 @@ Single samples from a client in the United States, 2026-10-06. These are not per
 | --- | --- | --- |
 | Wake from idle to first response | 1.9 s (Chromium ready 2.2 s later; Wikipedia then 7.3 s) | 42.6 s |
 | Landing page with saved example visible | 0.8–1.2 s warm | (live conversion: about 90 s from cold) |
-| Example.com conversion | 1.6 s | 5.4 s |
-| Wikipedia Pixel_art conversion | 8.6 s first, 6.8 s with cached artwork | 44.2 s |
+| Example.com conversion | 1.6–2.1 s | 5.4 s |
+| Wikipedia Pixel_art conversion | 9.7 s first, 7.9 s with cached artwork | 44.2 s |
 | GitHub repository page conversion | 9.9 s | not measured |
 
-Wikipedia stages on Cloud Run: navigation 2.2 s, preparation 2.0 s, snapshot 2.1 s, artwork 1.5 s. Navigation time depends on the source site and is not reduced by more CPU.
+Wikipedia stages on Cloud Run (commit `c2e0224`): navigation 1.7 s, preparation 3.5 s, snapshot 2.1 s, artwork 1.5 s. The cold-start row was measured on the previous revision, whose scroll preparation waited less per step. Navigation time depends on the source site and is not reduced by more CPU.

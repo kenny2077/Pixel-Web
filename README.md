@@ -65,7 +65,7 @@ Artwork goes through Lanczos resampling, weighted median-cut quantization and in
 
 ## Performance and hosting
 
-Conversion time depends mostly on the source site and on available CPU. On Cloud Run with 1 vCPU, a warm conversion of Wikipedia's Pixel art article took 6.8–8.6 seconds; the same page took about 45 seconds on the earlier Render Free deployment with 0.1 CPU. These are single samples, not guarantees. See [Cloud Run deployment and measurements](docs/cloud-run.md), [measurement method](docs/performance.md) and [earlier Render Free samples](docs/access-and-latency.md).
+Conversion time depends mostly on the source site and on available CPU. On Cloud Run with 1 vCPU, a warm conversion of Wikipedia's Pixel art article took 7.9–9.7 seconds; the same page took about 45 seconds on the earlier Render Free deployment with 0.1 CPU. These are single samples, not guarantees. See [Cloud Run deployment and measurements](docs/cloud-run.md), [measurement method](docs/performance.md) and [earlier Render Free samples](docs/access-and-latency.md).
 
 | Platform | Role |
 | --- | --- |
