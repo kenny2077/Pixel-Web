@@ -17,7 +17,7 @@
     "check:repo": "node scripts/check-repository.mjs"
   },
   "dependencies": {
-    "playwright": "1.62.1",
+    "playwright": "1.63.0",
     "sharp": "0.35.4"
   }
 }
