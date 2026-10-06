@@ -10,7 +10,7 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 - Bot checks and blank error pages (and HTTP 401) are reported as access refusals with a link to the original site.
 - Previews load artwork and fonts as content-addressed files instead of inline base64.
 - Artwork quantization uses one worker thread per CPU in the container's quota.
-- Public Cloud Run demo (1 vCPU, 4 GiB, at most one instance, scales to zero).
+- Public Cloud Run demo (4 vCPU, 8 GiB, at most one instance, scales to zero, two conversions at once).
 - The converter opens with a saved Wikipedia conversion and starts Chromium in the background; links and controls load the live page.
 - Hosted public-service mode with HMAC-signed anonymous sessions and per-visitor capture ownership.
 - The Render Free deployment was replaced by Cloud Run and removed.

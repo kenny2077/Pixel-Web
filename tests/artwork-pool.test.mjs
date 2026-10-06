@@ -20,6 +20,14 @@ test('worker threads produce the same artwork as the main thread', async () => {
   } finally { await pool.close(); }
 });
 
+test('warming starts every worker before the first image', async () => {
+  const pool = createArtworkPool({ size: 2 });
+  try {
+    await pool.warm();
+    assert.ok((await pool.run(await photo(2), { readable: true, width: 40, height: 30 })).length > 0);
+  } finally { await pool.close(); }
+});
+
 test('a failed image rejects only its own job', async () => {
   const pool = createArtworkPool({ size: 2 });
   try {

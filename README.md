@@ -65,12 +65,12 @@ Artwork goes through Lanczos resampling, weighted median-cut quantization and in
 
 ## Performance and hosting
 
-Conversion time depends mostly on the source site and on available CPU. On Cloud Run with 1 vCPU, a warm conversion of Wikipedia's Pixel art article took 7.9–9.7 seconds; the same page took about 45 seconds on the earlier Render Free deployment with 0.1 CPU. These are single samples, not guarantees. See [Cloud Run deployment and measurements](docs/cloud-run.md), [measurement method](docs/performance.md) and [earlier Render Free samples](docs/access-and-latency.md).
+Conversion time depends mostly on the source site and on available CPU. On the Cloud Run demo (4 vCPU), Wikipedia's Pixel art article converts in about 10 seconds and Stripe's image-heavy home page in 37 seconds; with 1 vCPU, Stripe took 107 seconds, and Render Free's 0.1 CPU needed 45 seconds for Wikipedia. These are single samples, not guarantees. See [Cloud Run deployment and measurements](docs/cloud-run.md), [measurement method](docs/performance.md) and [earlier Render Free samples](docs/access-and-latency.md).
 
 | Platform | Role |
 | --- | --- |
 | **Local Node server** | Full converter with retained source sessions. The reference setup. |
-| **Google Cloud Run** | Public demo: 1 vCPU, 4 GiB, one instance at most, scales to zero. Signed anonymous sessions; two retained pages, five-minute retention. |
+| **Google Cloud Run** | Public demo: 4 vCPU, 8 GiB, one instance at most, scales to zero. Two conversions at once, more wait in line. Signed anonymous sessions; three retained pages, five-minute retention. |
 | **GitHub Pages** | Redirects to the Cloud Run demo. |
 | **GitHub Actions** | Lockfile install and automated tests only. |
 | **Cloudflare Container** | Experimental configuration in `cloudflare/`. Requires Workers Paid; not deployed or measured. |
@@ -79,7 +79,7 @@ Changing provider does not remove source-page waits or source-site refusals. Com
 
 ## Compatibility and limits
 
-- Requests wait in a first-in, first-out queue; when eight are already waiting, the server answers busy. Locally one conversion runs at a time (`PIXELWEB_MAX_PARALLEL` raises it) and three source sessions are kept for ten minutes. The public demo keeps two pages for five minutes, so other visitors' conversions can replace yours. A restart or scale-down ends all sessions.
+- Requests wait in a first-in, first-out queue; when eight are already waiting, the server answers busy. Locally one conversion runs at a time (`PIXELWEB_MAX_PARALLEL` raises it) and three source sessions are kept for ten minutes. The public demo runs two conversions at once and keeps three pages for five minutes, so other visitors' conversions can replace yours. A restart or scale-down ends all sessions.
 - Initial captures have a 90-second deadline; interaction refreshes have 50 seconds. On heavy pages, slow fallbacks (video frames, element screenshots, rendered backgrounds) stop near the deadline and are listed as warnings. Readiness waits are bounded, so very late content can be missed.
 - Videos are paused once they start, so previews show one still frame. Video buffering does not count toward the public demo's 96 MB download limit.
 - Infinite feeds have no finite whole page. The converter traverses them within a bounded preparation window.
