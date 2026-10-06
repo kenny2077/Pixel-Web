@@ -13,6 +13,12 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 - Hosted source connections are pinned to checked public addresses.
 - Source refusals (HTTP 403/999 and 429) return structured errors with a link to the original site.
 
+### Fixes
+
+- Pages with many autoplaying videos (such as Hugging Face paper listings) no longer hit the public demo download limit: video buffering is excluded, videos pause after their first frame, and the image buffer limit rose from 24 MB to 64 MB.
+- Heavy pages return with warnings instead of failing: the capture deadline rose from 55 to 90 seconds and slow per-asset fallbacks stop before it.
+- Hosted PDF conversion installs Pillow; a numeric child-process error code no longer crashes the server.
+
 ### Performance
 
 - Scroll preparation waits only while the page is still changing: Wikipedia preparation fell from 4.4 to 3.4 seconds locally.
@@ -40,6 +46,12 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 
 - Preserve circular avatars, control geometry, multi-column references and intrinsic document flow.
 - Keep lazy and scroll-revealed content within the bounded capture window.
+
+### Fixes
+
+- Pages with many autoplaying videos (such as Hugging Face paper listings) no longer hit the public demo download limit: video buffering is excluded, videos pause after their first frame, and the image buffer limit rose from 24 MB to 64 MB.
+- Heavy pages return with warnings instead of failing: the capture deadline rose from 55 to 90 seconds and slow per-asset fallbacks stop before it.
+- Hosted PDF conversion installs Pillow; a numeric child-process error code no longer crashes the server.
 
 ### Performance
 

@@ -80,7 +80,8 @@ Changing provider does not remove source-page waits or source-site refusals. Com
 ## Compatibility and limits
 
 - One conversion or action runs at a time. Locally, three source sessions are kept for ten minutes. The public demo keeps two pages for five minutes, so other visitors' conversions can replace yours. A restart or scale-down ends all sessions.
-- Initial captures have a 55-second deadline; interaction refreshes have 50 seconds. Readiness waits are bounded, so very late content can be missed.
+- Initial captures have a 90-second deadline; interaction refreshes have 50 seconds. On heavy pages, slow fallbacks (video frames, element screenshots, rendered backgrounds) stop near the deadline and are listed as warnings. Readiness waits are bounded, so very late content can be missed.
+- Videos are paused once they start, so previews show one still frame. Video buffering does not count toward the public demo's 96 MB download limit.
 - Infinite feeds have no finite whole page. The converter traverses them within a bounded preparation window.
 - Cross-origin iframe apps, WebSockets, uploads, downloads and device permissions are not fully proxied. CAPTCHAs and login walls are not bypassed. Account and payment flows are not verified.
 - Still media is a visual fallback; not every video player or canvas application remains functional.
