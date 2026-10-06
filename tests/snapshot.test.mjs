@@ -85,3 +85,27 @@ test('omitted default declarations render the same computed styles as the source
     assert.ok(snapshot.html.length < 12_000, `snapshot is ${snapshot.html.length} characters`);
   } finally { await browser.close(); }
 });
+
+test('previews can reference artwork and fonts as cacheable files instead of inline data', () => {
+  const png = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10, 1, 2, 3]);
+  const font = Buffer.from('font bytes');
+  const snapshot = {
+    html: '<body><img alt="a" src="data:image/gif;base64,R0lGOD" data-pixel-image="image-0"><div data-pixel-background="background-0">中文</div></body>',
+    backgrounds: [{ id: 'background-0', mode: 'rendered' }],
+    fontCss: `@font-face{font-family:Source;src:url(data:font/woff2;base64,${font.toString('base64')});font-display:swap}`,
+    title: 'Fixture', url: 'https://example.org/',
+  };
+  const seen = [];
+  const assetUrl = (bytes, type) => { seen.push(type); return `/asset/capture/${bytes.length}-${seen.length}`; };
+  const html = preview.renderPreview(snapshot, { imageAssets: new Map([['image-0', png]]), backgroundAssets: new Map([['background-0', png]]), textMode: 'all', assetUrl });
+  assert.doesNotMatch(html, /data:image\/png|data:font/);
+  assert.match(html, /<img[^>]*src="\/asset\/capture\/11-1"/);
+  assert.match(html, /background-image:url\("\/asset\/capture\/11-2"\)/);
+  assert.match(html, /url\("\/asset\/capture\/10-3"\)/);
+  assert.match(html, /url\("\/fonts\/pixelify\.ttf"\)/);
+  assert.match(html, /url\("\/fonts\/fusion-pixel-cjk\.woff2"\)/);
+  assert.match(html, /img-src data: 'self'; style-src 'unsafe-inline'; font-src data: 'self'/);
+  assert.deepEqual(seen, ['image/png', 'image/png', 'font/woff2']);
+  // Without an asset callback the preview stays self-contained, as the saved example requires.
+  assert.match(preview.renderPreview(snapshot, { imageAssets: new Map([['image-0', png]]) }), /src="data:image\/png;base64,/);
+});
