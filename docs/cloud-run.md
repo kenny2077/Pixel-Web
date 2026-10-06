@@ -2,7 +2,7 @@
 
 Service: https://pixel-web-803742923007.us-central1.run.app/
 
-Created 2026-10-06 in project `pixel-web-demo`, region `us-central1`. It runs the same Dockerfile as Render, with more CPU and memory.
+Created 2026-10-06 in project `pixel-web-demo`, region `us-central1`. It replaced the Render Free deployment and uses the repository Dockerfile.
 
 ## Configuration
 
@@ -40,9 +40,9 @@ gcloud run deploy pixel-web --source . --region us-central1 --project pixel-web-
 
 Single samples from a client in the United States, 2026-10-06. These are not percentile guarantees.
 
-| Request | Cloud Run (1 vCPU) | Render Free (0.1 CPU) |
+| Request | Cloud Run (1 vCPU) | Render Free, removed (0.1 CPU) |
 | --- | --- | --- |
-| Wake from idle to first response | pending measurement | 42.6 s |
+| Wake from idle to first response | 1.9 s (Chromium ready 2.2 s later; Wikipedia then 7.3 s) | 42.6 s |
 | Landing page with saved example visible | 0.8–1.2 s warm | (live conversion: about 90 s from cold) |
 | Example.com conversion | 1.6 s | 5.4 s |
 | Wikipedia Pixel_art conversion | 8.6 s first, 6.8 s with cached artwork | 44.2 s |

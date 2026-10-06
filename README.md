@@ -65,13 +65,12 @@ Artwork goes through Lanczos resampling, weighted median-cut quantization and in
 
 ## Performance and hosting
 
-Conversion time depends mostly on the source site and on available CPU. On Cloud Run with 1 vCPU, a warm conversion of Wikipedia's Pixel art article took 6.8–8.6 seconds; the same page took about 45 seconds on Render Free's 0.1 CPU. These are single samples, not guarantees. See [Cloud Run deployment and measurements](docs/cloud-run.md), [measurement method](docs/performance.md) and [earlier Render samples](docs/access-and-latency.md).
+Conversion time depends mostly on the source site and on available CPU. On Cloud Run with 1 vCPU, a warm conversion of Wikipedia's Pixel art article took 6.8–8.6 seconds; the same page took about 45 seconds on the earlier Render Free deployment with 0.1 CPU. These are single samples, not guarantees. See [Cloud Run deployment and measurements](docs/cloud-run.md), [measurement method](docs/performance.md) and [earlier Render Free samples](docs/access-and-latency.md).
 
 | Platform | Role |
 | --- | --- |
 | **Local Node server** | Full converter with retained source sessions. The reference setup. |
 | **Google Cloud Run** | Public demo: 1 vCPU, 2 GiB, one instance at most, scales to zero. Signed anonymous sessions; two retained pages, five-minute retention. |
-| **Render Free** | Earlier demo, kept as a fallback. 0.1 CPU and 512 MB; sleeps after inactivity and wakes in about 40 seconds. |
 | **GitHub Pages** | Redirects to the Cloud Run demo. |
 | **GitHub Actions** | Lockfile install and automated tests only. |
 | **Cloudflare Container** | Experimental configuration in `cloudflare/`. Requires Workers Paid; not deployed or measured. |

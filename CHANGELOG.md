@@ -8,7 +8,8 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 
 - Public Cloud Run demo (1 vCPU, 2 GiB, at most one instance, scales to zero).
 - The converter opens with a saved Wikipedia conversion and starts Chromium in the background; links and controls load the live page.
-- Public Render Free demo with HMAC-signed anonymous sessions, per-visitor capture ownership and one retained page.
+- Hosted public-service mode with HMAC-signed anonymous sessions and per-visitor capture ownership.
+- The Render Free deployment was replaced by Cloud Run and removed.
 - Hosted source connections are pinned to checked public addresses.
 - Source refusals (HTTP 403/999 and 429) return structured errors with a link to the original site.
 
@@ -23,7 +24,7 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 ### Documentation
 
 - README screenshot, architecture diagram with light and dark variants, and a Docker quick start.
-- Deployed latency samples and Render hosting notes.
+- Deployed latency samples and Cloud Run hosting notes.
 
 ## 0.1.0 — 2026-10-04
 

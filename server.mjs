@@ -69,7 +69,7 @@ export async function startServer({ port = Number(process.env.PORT) || 4173, hos
       } else if (publicService) {
         const session = cookieSession(request.headers.cookie, sessionKey);
         owner = session.owner;
-        const secure = process.env.RENDER === 'true' || request.headers['x-forwarded-proto'] === 'https';
+        const secure = request.headers['x-forwarded-proto'] === 'https';
         if (session.token) response.setHeader('Set-Cookie', `pixelweb_session=${session.token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400${secure ? '; Secure' : ''}`);
       }
       if (request.method === 'POST') {

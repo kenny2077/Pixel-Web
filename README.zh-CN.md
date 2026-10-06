@@ -65,7 +65,7 @@ npm run check:repo
 npm run verify
 ```
 
-GitHub Actions 用于测试。GitHub Pages 跳转到 Cloud Run 交互服务；Render Free 保留为较慢的备用部署。Cloudflare Container 配置已准备，但尚未部署或验证速度；需要 Workers Paid plan。首次加载仍受原网站网络影响，没有固定的速度保证。
+GitHub Actions 用于测试。GitHub Pages 跳转到 Cloud Run 交互服务。Cloudflare Container 配置已准备，但尚未部署或验证速度；需要 Workers Paid plan。首次加载仍受原网站网络影响，没有固定的速度保证。
 
 当前一次只执行一个转换或操作。本地默认保留三个 source sessions，每个十分钟。公开服务保留两个页面，五分钟后过期；其他访客转换新页面也可能替换它。WebSockets、复杂 iframe、上传下载和账号支付流程尚未完整支持。完整限制见 [English README](README.md#compatibility-and-limits) 和 [SECURITY.md](SECURITY.md)。
 
