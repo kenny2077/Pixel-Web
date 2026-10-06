@@ -61,7 +61,7 @@ docker run --rm -p 127.0.0.1:4173:4173 pixel-web
 
 The source page never runs in your browser. Pixel Web loads it in a separate Chromium context, scrolls it once so lazy and scroll-revealed content appears, then records the DOM, computed styles and the images, fonts and stylesheets it fetched.
 
-Artwork goes through Lanczos resampling, weighted median-cut quantization and integer pixel replication, and is cached by content hash. The preview is rebuilt as plain HTML with pixel fonts, so text stays selectable and the layout matches the original. It is served under a strict Content Security Policy that allows only Pixel Web's bridge script. When you click, type or scroll, the bridge sends the action back; the server repeats it on the live source page and captures the result. A scroll that reveals nothing new keeps the current preview.
+Artwork goes through Lanczos resampling, weighted median-cut quantization and integer pixel replication in worker threads, one per available CPU, and is cached by content hash. Converted images and fonts are served as separate cacheable files, so the preview HTML stays small and style changes reuse unchanged artwork. The preview is rebuilt as plain HTML with pixel fonts, so text stays selectable and the layout matches the original. It is served under a strict Content Security Policy that allows only Pixel Web's bridge script. When you click, type or scroll, the bridge sends the action back; the server repeats it on the live source page and captures the result. A scroll that reveals nothing new keeps the current preview.
 
 ## Performance and hosting
 
@@ -79,11 +79,11 @@ Changing provider does not remove source-page waits or source-site refusals. Com
 
 ## Compatibility and limits
 
-- One conversion or action runs at a time. Locally, three source sessions are kept for ten minutes. The public demo keeps two pages for five minutes, so other visitors' conversions can replace yours. A restart or scale-down ends all sessions.
+- Requests wait in a first-in, first-out queue; when eight are already waiting, the server answers busy. Locally one conversion runs at a time (`PIXELWEB_MAX_PARALLEL` raises it) and three source sessions are kept for ten minutes. The public demo keeps two pages for five minutes, so other visitors' conversions can replace yours. A restart or scale-down ends all sessions.
 - Initial captures have a 90-second deadline; interaction refreshes have 50 seconds. On heavy pages, slow fallbacks (video frames, element screenshots, rendered backgrounds) stop near the deadline and are listed as warnings. Readiness waits are bounded, so very late content can be missed.
 - Videos are paused once they start, so previews show one still frame. Video buffering does not count toward the public demo's 96 MB download limit.
 - Infinite feeds have no finite whole page. The converter traverses them within a bounded preparation window.
-- Cross-origin iframe apps, WebSockets, uploads, downloads and device permissions are not fully proxied. CAPTCHAs and login walls are not bypassed. Account and payment flows are not verified.
+- Cross-origin iframe apps, WebSockets, uploads, downloads and device permissions are not fully proxied. CAPTCHAs, bot checks and login walls are not bypassed; pages that answer with one are reported as refusals with a link to the original site. Account and payment flows are not verified.
 - Still media is a visual fallback; not every video player or canvas application remains functional.
 - Private destinations are blocked. Hosted mode pins source connections to checked public addresses; local mode checks DNS but does not pin it. This is not a hardened public proxy: keep your own instance local or access-controlled. See [SECURITY.md](SECURITY.md).
 

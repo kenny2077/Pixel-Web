@@ -57,7 +57,7 @@ const previewUrl = (id, options) => `/preview/${id}?${new URLSearchParams({ cell
 export async function startServer({ port = Number(process.env.PORT) || 4173, host = process.env.HOST || '127.0.0.1', publicService = process.env.PIXELWEB_PUBLIC_SERVICE === '1', sessionMode = process.env.PIXELWEB_SESSION_MODE || 'cookie', maxCaptures = Number(process.env.PIXELWEB_MAX_CAPTURES) || 3, sessionMs = Number(process.env.PIXELWEB_SESSION_MS) || 600_000 } = {}) {
   const captures = new Map(), sessionKey = randomBytes(32);
   // Browser work waits in line; PIXELWEB_MAX_PARALLEL lets larger instances run several conversions at once.
-  const queue = createQueue({ parallel: Math.max(1, Number(process.env.PIXELWEB_MAX_PARALLEL) || 1), waiting: 8 });
+  const queue = createQueue({ parallel: Math.max(1, Number(process.env.PIXELWEB_MAX_PARALLEL) || 1), waiting: 8, timeoutMs: Number(process.env.PIXELWEB_TASK_TIMEOUT_MS) || 150_000 });
   // Operations on one capture share its live page, so they run one after another even with parallel slots.
   const withEntry = (entry, task) => {
     const run = (entry.lock || Promise.resolve()).then(task, task);

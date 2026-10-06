@@ -67,6 +67,6 @@ npm run verify
 
 GitHub Actions 用于测试。GitHub Pages 跳转到 Cloud Run 交互服务。Cloudflare Container 配置已准备，但尚未部署或验证速度；需要 Workers Paid plan。首次加载仍受原网站网络影响，没有固定的速度保证。
 
-当前一次只执行一个转换或操作。本地默认保留三个 source sessions，每个十分钟。公开服务保留两个页面，五分钟后过期；其他访客转换新页面也可能替换它。WebSockets、复杂 iframe、上传下载和账号支付流程尚未完整支持。完整限制见 [English README](README.md#compatibility-and-limits) 和 [SECURITY.md](SECURITY.md)。
+请求按先后顺序排队；已有八个请求等待时，服务会提示繁忙。遇到人机验证或空白错误页的网站会提示访问被拒绝，并提供原网站链接。本地默认保留三个 source sessions，每个十分钟。公开服务保留两个页面，五分钟后过期；其他访客转换新页面也可能替换它。WebSockets、复杂 iframe、上传下载和账号支付流程尚未完整支持。完整限制见 [English README](README.md#compatibility-and-limits) 和 [SECURITY.md](SECURITY.md)。
 
 代码使用 [MIT license](LICENSE)。字体与录制网站保留各自许可。见 [第三方说明](THIRD_PARTY_NOTICES.md)。

@@ -28,3 +28,9 @@ test('a failed task releases its slot', async () => {
   await assert.rejects(queue.run(async () => { throw new Error('source failed'); }), /source failed/);
   assert.equal(await queue.run(async () => 'next'), 'next');
 });
+
+test('a task that outlives its deadline frees the slot and reports a timeout', async () => {
+  const queue = createQueue({ parallel: 1, waiting: 2, timeoutMs: 30 });
+  await assert.rejects(queue.run(() => new Promise(() => {})), error => error.httpStatus === 504);
+  assert.equal(await queue.run(async () => 'next'), 'next');
+});
