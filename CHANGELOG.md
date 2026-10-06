@@ -15,6 +15,7 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 
 ### Fixes
 
+- Reserved IPv4 ranges are matched exactly. The check had blocked all of 192.0.0.0/16, 198.51.0.0/16 and 203.0.0.0/16, refusing real sites such as nasa.gov (WordPress VIP, 192.0.66.0/24).
 - Pages with many autoplaying videos (such as Hugging Face paper listings) no longer hit the public demo download limit: video buffering is excluded, videos pause after their first frame, and the image buffer limit rose from 24 MB to 64 MB.
 - Heavy pages return with warnings instead of failing: the capture deadline rose from 55 to 90 seconds and slow per-asset fallbacks stop before it.
 - Hosted PDF conversion installs Pillow; a numeric child-process error code no longer crashes the server.
