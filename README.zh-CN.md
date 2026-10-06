@@ -8,6 +8,10 @@
 
 Demo 使用 Render Free，默认打开 Wikipedia Pixel art，也接受公开 URL。休眠后 cold start 可能需要约一分钟，复杂页面可能超出免费实例内存。本项目为早期版本，不保证每个网站都能完整交互。
 
+<a href="https://pixel-web-a3t7.onrender.com/"><img src="docs/assets/wikipedia-pixel-art.png" alt="Pixel Web 中的 Wikipedia Pixel art 条目：目录、正文和 Appearance 面板使用像素字体，猫的肖像被重新渲染为像素画。" width="100%"></a>
+
+<p align="center"><sub>Pixel Web 转换后的 Wikipedia <i>Pixel art</i> 条目。保留 layout、links 和可选择文字；图片以较少颜色重新渲染。</sub></p>
+
 ## 本地运行
 
 需要 Node.js 22+、Python 3.10+ 和浏览器。macOS 使用已安装的 Google Chrome；Linux 使用 Playwright Chromium。Windows 尚未验证。
@@ -25,6 +29,22 @@ npm start
 ```
 
 打开 http://127.0.0.1:4173，粘贴公开 URL，点击 Convert。默认使用 All pixel text。在 Style 中可以更换文字、pixel size、palette 和 dithering。
+
+也可以使用 Docker，无需单独安装 Node、Python 和浏览器：
+
+```bash
+docker build -t pixel-web .
+docker run --rm -p 127.0.0.1:4173:4173 pixel-web
+```
+
+## 工作原理
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
+  <img src="docs/assets/architecture-light.svg" alt="隔离的 Chromium context 加载公开网页并运行其脚本。Pixel Web 记录 DOM 和 computed styles、转换图片并生成 preview HTML。你的浏览器在只运行 Pixel Web bridge script 的 iframe 中显示它；点击、输入和滚动会在源网页上重放并重新捕获。" width="100%">
+</picture>
+
+源网页的脚本不会在你的浏览器中运行。图片经过 Lanczos resampling、weighted median-cut 量化和整数像素放大；preview 是带 pixel fonts 的普通 HTML，文字保持可选择。
 
 ## 功能
 

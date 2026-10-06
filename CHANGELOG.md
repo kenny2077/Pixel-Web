@@ -2,6 +2,23 @@
 
 This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-requests). Version 0.x is experimental; compatibility and interfaces can change.
 
+## Unreleased
+
+### Features
+
+- Public Render Free demo with HMAC-signed anonymous sessions, per-visitor capture ownership and one retained page.
+- Hosted source connections are pinned to checked public addresses.
+- Source refusals (HTTP 403/999 and 429) return structured errors with a link to the original site.
+
+### Performance
+
+- Batch interaction metadata writes, serialize CSS declarations in one pass and skip resampling for one-pixel image cells.
+
+### Documentation
+
+- README screenshot, architecture diagram with light and dark variants, and a Docker quick start.
+- Deployed latency samples and Render hosting notes.
+
 ## 0.1.0 — 2026-10-04
 
 ### Features

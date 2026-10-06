@@ -16,5 +16,5 @@ for (const [name, pkg] of Object.entries(lock.packages)) {
   assert.ok(!pkg.link, `Local dependency link: ${name}`);
   assert.ok(!pkg.resolved || pkg.resolved.startsWith('https://'), `Non-portable dependency: ${name}`);
 }
-for (const path of ['demo/assets/banner.svg', 'demo/assets/aurora-pixel.jpg', 'demo/assets/aurora-original.jpg', 'demo/index.html', 'LICENSE']) await access(path);
+for (const path of ['demo/assets/banner.svg', 'docs/assets/wikipedia-pixel-art.png', 'docs/assets/architecture-light.svg', 'docs/assets/architecture-dark.svg', 'demo/assets/aurora-pixel.jpg', 'demo/assets/aurora-original.jpg', 'demo/index.html', 'LICENSE']) await access(path);
 console.log('Repository links, demo assets and dependency metadata are valid.');

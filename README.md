@@ -3,27 +3,31 @@
 <p align="center">
   <a href="https://github.com/kenny2077/Pixel-Web/actions/workflows/ci.yml"><img src="https://github.com/kenny2077/Pixel-Web/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-ededed?labelColor=444444" alt="MIT license"></a>
-  <a href="https://kenny2077.github.io/Pixel-Web/">Open Pixel Web</a> · <a href="#quick-start">Quick start</a> · <a href="README.zh-CN.md">中文</a>
+  <img src="https://img.shields.io/badge/node-%E2%89%A522-ededed?labelColor=444444" alt="Node.js 22 or newer">
+  <br>
+  <a href="https://pixel-web-a3t7.onrender.com/"><b>Open the demo</b></a> · <a href="#quick-start">Quick start</a> · <a href="#how-it-works">How it works</a> · <a href="README.zh-CN.md">中文</a>
 </p>
 
 Turn a public website into a full-page, clickable pixel-style preview. Keep its layout, recognizable images and working controls. Conversion uses image algorithms and pixel fonts, with no AI calls.
 
 **[Open the interactive demo](https://pixel-web-a3t7.onrender.com/)** or run the converter locally. The demo opens Wikipedia Pixel art and accepts public URLs. It runs on Render Free: cold starts can take about a minute and large pages may exceed the available memory. Pixel Web is an early release with documented compatibility limits.
 
+<a href="https://pixel-web-a3t7.onrender.com/"><img src="docs/assets/wikipedia-pixel-art.png" alt="Pixel Web showing Wikipedia's Pixel art article: the table of contents, article text and Appearance panel in pixel type, with the cat portrait re-rendered as pixel art." width="100%"></a>
+
+<p align="center"><sub>Wikipedia's <i>Pixel art</i> article in Pixel Web. Layout, links and selectable text are kept; the artwork is re-rendered with a reduced palette.</sub></p>
+
 ## What it does
 
-| | |
-| --- | --- |
-| **Full pages** | Preserve rendered text, layout, columns, backgrounds and below-fold content. |
-| **Source interaction** | Forward supported menus, buttons, inputs and forms to an isolated source browser. Links continue in pixel mode. |
-| **Readable artwork** | Give images and small icons finer pixels and a larger palette than background artwork. Preserve avatar shapes. |
-| **English and Chinese** | Use self-hosted Pixelify Sans and Fusion Pixel CJK. Protect icon-font glyphs. |
-| **Style control** | Choose pixel headings, all pixel text or original fonts; adjust background pixel size, palette and dithering. |
-| **Static media and PDFs** | Capture supported dynamic media as stills. Render PDF pages with clickable annotations. |
+- **Full pages.** Rendered text, layout, columns, backgrounds and below-the-fold content are preserved.
+- **Live controls.** Supported menus, buttons, inputs and forms are forwarded to an isolated source browser. Links continue in pixel mode.
+- **Readable artwork.** Images and small icons get finer pixels and a larger palette than background artwork. Avatar shapes are preserved.
+- **English and Chinese.** Self-hosted Pixelify Sans and Fusion Pixel CJK, with icon-font glyphs protected.
+- **Style control.** Pixel headings, all pixel text or original fonts; adjustable background pixel size, palette and dithering.
+- **Media and PDFs.** Supported dynamic media is captured as stills. PDF pages render with clickable annotations.
 
 ## Quick start
 
-Requires **Node.js 22+**, **Python 3.10+**, and a browser. macOS uses installed Google Chrome; Linux uses Playwright Chromium.
+Requires **Node.js 22+**, **Python 3.10+** and a browser. macOS uses installed Google Chrome; Linux uses Playwright Chromium. Windows has not been verified.
 
 ```bash
 git clone https://github.com/kenny2077/Pixel-Web.git
@@ -39,45 +43,48 @@ npx playwright install --with-deps chromium
 npm start
 ```
 
-Open **http://127.0.0.1:4173**, paste a public URL, and select **Convert**. All pixel text is the default. Use **Style** to adjust the result or compare original fonts and artwork. Windows setup has not been verified.
+Open **http://127.0.0.1:4173**, paste a public URL and select **Convert**. All pixel text is the default. Use **Style** to adjust the result or compare it with the original fonts and artwork.
+
+To skip the Node, Python and browser setup, run the bundled image instead:
+
+```bash
+docker build -t pixel-web .
+docker run --rm -p 127.0.0.1:4173:4173 pixel-web
+```
 
 ## How it works
 
-```mermaid
-flowchart LR
-  URL[Public URL] --> Browser[Isolated browser]
-  Browser --> Snapshot[Full DOM and artwork capture]
-  Snapshot --> Pixels[Resampling and median-cut palette]
-  Pixels --> Preview[Pixel HTML preview]
-  Preview -->|Supported controls| Browser
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
+  <img src="docs/assets/architecture-light.svg" alt="An isolated Chromium context loads the public page and runs its scripts. Pixel Web snapshots the DOM and computed styles, converts artwork, and builds preview HTML. Your browser shows that HTML in an iframe that runs only Pixel Web's bridge script; clicks, typing and scrolling are replayed on the source page, which is then captured again." width="100%">
+</picture>
 
-Source JavaScript stays in the source browser. The displayed document executes only Pixel Web's interaction bridge. It keeps selectable text and semantic controls, rather than turning the entire page into one screenshot.
+The source page never runs in your browser. Pixel Web loads it in a separate Chromium context, scrolls it once so lazy and scroll-revealed content appears, then records the DOM, computed styles and the images, fonts and stylesheets it fetched.
 
-The image pipeline uses Lanczos resampling, weighted median-cut quantization and integer pixel replication. English and Chinese text use pixel fonts. Converted artwork has a bounded content cache; unchanged bottom-scroll checks keep the current preview.
+Artwork goes through Lanczos resampling, weighted median-cut quantization and integer pixel replication, and is cached by content hash. The preview is rebuilt as plain HTML with pixel fonts, so text stays selectable and the layout matches the original. It is served under a strict Content Security Policy that allows only Pixel Web's bridge script. When you click, type or scroll, the bridge sends the action back; the server repeats it on the live source page and captures the result. A scroll that reveals nothing new keeps the current preview.
 
 ## Performance and hosting
 
-Conversion time depends on the source website, browser startup, page length and artwork. A repeated-image fixture improved from 1,650ms to 79ms after deduplication; this is **not** a whole-page speed guarantee. [Measurement method and trade-offs](docs/performance.md).
+Conversion time depends mostly on the source site and on available CPU. A repeated-image fixture improved from 1,650 ms to 79 ms after deduplication; that is **not** a whole-page guarantee. See [measurement method and trade-offs](docs/performance.md) and [deployed latency samples](docs/access-and-latency.md).
 
 | Platform | Role |
 | --- | --- |
-| **GitHub Actions** | Install from the lockfile and run automated tests. Not an interactive conversion server. |
-| **GitHub Pages** | Redirect to the live Render service. |
-| **Render Free** | Run the full converter with signed anonymous sessions. One retained page, five-minute retention; sleeps after inactivity. |
-| **Local Node server** | Run the full converter and retained source sessions. |
-| **Cloudflare Container** | Experimental deployment configuration in `cloudflare/`. Requires Workers Paid. Not deployed or performance-validated. |
+| **Local Node server** | Full converter with retained source sessions. The reference setup. |
+| **Render Free** | Public demo with signed anonymous sessions. One retained page, five-minute retention; sleeps after inactivity. |
+| **GitHub Pages** | Redirects to the Render demo. |
+| **GitHub Actions** | Lockfile install and automated tests only. |
+| **Cloudflare Container** | Experimental configuration in `cloudflare/`. Requires Workers Paid; not deployed or measured. |
 
-Cloudflare may improve capacity or network proximity, but it does not remove source-page waits. Compare cold startup and warm requests before claiming a speed improvement. [Hosting notes](docs/hosting.md).
+Changing provider does not remove source-page waits or source-site refusals. Compare cold starts and warm requests before claiming a speed improvement. [Hosting notes](docs/hosting.md).
 
 ## Compatibility and limits
 
-- One conversion or action runs at a time. Local defaults retain three source sessions for ten minutes. The free public service retains one page for five minutes; another visitor converting a page can expire yours. A restart ends sessions.
-- Initial source contexts have a 55-second deadline; interaction refreshes have a 50-second deadline. Readiness waits are bounded, so exceptionally late content can still be missed.
-- Infinite feeds cannot have a finite whole-page result. The converter traverses the page within a bounded preparation window.
-- Cross-origin iframe apps, WebSockets, uploads, downloads and device permissions are not fully proxied. CAPTCHA restrictions are not bypassed. Account and payment workflows are not verified.
-- Still media is a visual fallback, not a guarantee that every video player or canvas application remains functional.
-- Private destinations are blocked, but DNS is not pinned. Keep the server local or access-controlled; this is not a hardened public proxy. Read [SECURITY.md](SECURITY.md).
+- One conversion or action runs at a time. Locally, three source sessions are kept for ten minutes. The public demo keeps one page for five minutes, so another visitor's conversion can replace yours. A restart ends all sessions.
+- Initial captures have a 55-second deadline; interaction refreshes have 50 seconds. Readiness waits are bounded, so very late content can be missed.
+- Infinite feeds have no finite whole page. The converter traverses them within a bounded preparation window.
+- Cross-origin iframe apps, WebSockets, uploads, downloads and device permissions are not fully proxied. CAPTCHAs and login walls are not bypassed. Account and payment flows are not verified.
+- Still media is a visual fallback; not every video player or canvas application remains functional.
+- Private destinations are blocked. Hosted mode pins source connections to checked public addresses; local mode checks DNS but does not pin it. This is not a hardened public proxy: keep your own instance local or access-controlled. See [SECURITY.md](SECURITY.md).
 
 ## Development
 
@@ -88,10 +95,10 @@ npm run check:repo       # Documentation links and portable dependency metadata
 npm run verify           # Live website smoke checks; start the server first
 ```
 
-Live checks save results to ignored `artifacts/`. Automated CI uses synthetic fixtures so upstream site changes do not break every pull request. [Contributing](CONTRIBUTING.md) explains the workflow and Conventional Commits.
+Live checks save results to the ignored `artifacts/` directory. CI uses synthetic fixtures so upstream site changes cannot break every pull request. [CONTRIBUTING.md](CONTRIBUTING.md) covers the workflow, module map and commit style.
 
 ## License and credits
 
-Code is [MIT licensed](LICENSE). Bundled fonts retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). Captured websites retain their original ownership and terms.
+Code is [MIT licensed](LICENSE). Bundled fonts keep their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). Captured websites remain the property of their owners and subject to their terms.
 
-Visual inspiration: [Sprite Fusion Destroy](https://destroy.spritefusion.com/). Repository presentation was studied from [Hermes Agent](https://github.com/NousResearch/hermes-agent); Pixel Web uses its own branding and screenshots.
+Visual inspiration: [Sprite Fusion Destroy](https://destroy.spritefusion.com/).

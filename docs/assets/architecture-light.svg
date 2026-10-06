@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 988 444" width="988" height="444" role="img" aria-labelledby="title desc">
+<title id="title">How Pixel Web converts a page</title>
+<desc id="desc">An isolated Chromium context loads the public page and runs its scripts. Pixel Web snapshots the DOM and computed styles, converts artwork with Lanczos resampling, median-cut palettes and integer upscaling, then builds preview HTML with pixel fonts. Your browser shows that preview in an iframe that runs only Pixel Web's bridge script. Clicks, typing and scrolling are replayed on the source page, which is captured again.</desc>
+<style>
+@font-face{font-family:PixelifySub;src:url(data:font/woff;base64,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) format('woff')}
+.title{font:15px PixelifySub,monospace;fill:#1f2328}
+.cap{font:600 11px ui-sans-serif,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:.08em;fill:#59636e}
+.note{font:italic 11.5px ui-sans-serif,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#59636e}
+.body{font:13px ui-sans-serif,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#59636e}
+.mono{font:11.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#59636e}
+.flow{font:12px ui-sans-serif,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#59636e}
+.accent{fill:#5b58c8}
+</style>
+<defs>
+<marker id="head" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#59636e"/></marker>
+<marker id="head-accent" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#5b58c8"/></marker>
+</defs>
+<rect x="0.5" y="0.5" width="987" height="443" fill="#ffffff" stroke="#d0d7de"/>
+<rect x="14" y="16" width="208" height="412" fill="none" stroke="#8c959f" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="28" y="40" class="cap">ISOLATED SOURCE BROWSER</text>
+<text x="28" y="414" class="note">Source scripts run only here</text>
+<rect x="272" y="16" width="454" height="412" fill="none" stroke="#8c959f" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="286" y="40" class="cap">PIXEL WEB SERVER</text>
+<rect x="776" y="16" width="198" height="412" fill="none" stroke="#8c959f" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="790" y="40" class="cap">YOUR BROWSER</text>
+<text x="790" y="414" class="note">Receives HTML, not source JS</text>
+<rect x="34" y="64" width="176" height="54" fill="#d0d7de"/>
+<rect x="30" y="60" width="176" height="54" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="44" y="86" class="title">Public URL</text>
+<text x="44" y="109" class="body">public hosts only</text>
+<rect x="34" y="170" width="176" height="126" fill="#d0d7de"/>
+<rect x="30" y="166" width="176" height="126" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="44" y="192" class="title">Source page</text>
+<text x="44" y="215" class="body">Chromium context</text>
+<text x="44" y="233" class="body">runs the site's JS</text>
+<text x="44" y="251" class="body">keeps its cookies</text>
+<text x="44" y="279" class="mono">lib/capture.mjs</text>
+<polyline points="118,114 118,164" fill="none" stroke="#59636e" stroke-width="1.5" stroke-linejoin="miter" marker-end="url(#head)"/>
+<rect x="96.5" y="131" width="43" height="18" fill="#ffffff"/>
+<text x="118" y="144" text-anchor="middle" class="flow">loads</text>
+<rect x="300" y="64" width="180" height="104" fill="#d0d7de"/>
+<rect x="296" y="60" width="180" height="104" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="310" y="86" class="title">Snapshot</text>
+<text x="310" y="109" class="body">DOM, text, links</text>
+<text x="310" y="127" class="body">computed styles</text>
+<text x="310" y="151" class="mono">snapshotPage()</text>
+<rect x="300" y="186" width="180" height="140" fill="#d0d7de"/>
+<rect x="296" y="182" width="180" height="140" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="310" y="208" class="title">Artwork</text>
+<text x="310" y="231" class="body">Lanczos resample</text>
+<text x="310" y="249" class="body">median-cut palette</text>
+<text x="310" y="267" class="body">integer upscale</text>
+<text x="310" y="285" class="body">content-hash cache</text>
+<text x="310" y="309" class="mono">lib/pixels.mjs · sharp</text>
+<polyline points="206,206 247,206 247,108 294,108" fill="none" stroke="#59636e" stroke-width="1.5" stroke-linejoin="miter" marker-end="url(#head)"/>
+<rect x="232.1" y="148" width="29.799999999999997" height="18" fill="#ffffff"/>
+<text x="247" y="161" text-anchor="middle" class="flow">DOM</text>
+<polyline points="206,262 294,262" fill="none" stroke="#59636e" stroke-width="1.5" stroke-linejoin="miter" marker-end="url(#head)"/>
+<rect x="209.7" y="238" width="82.6" height="18" fill="#ffffff"/>
+<text x="251" y="251" text-anchor="middle" class="flow">image bytes</text>
+<rect x="530" y="126" width="184" height="124" fill="#d0d7de"/>
+<rect x="526" y="122" width="184" height="124" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="540" y="148" class="title">Preview HTML</text>
+<text x="540" y="171" class="body">pixel fonts, EN + CJK</text>
+<text x="540" y="189" class="body">selectable text</text>
+<text x="540" y="207" class="body">sanitized markup</text>
+<text x="540" y="233" class="mono">lib/preview.mjs</text>
+<polyline points="476,108 503,108 503,166 524,166" fill="none" stroke="#59636e" stroke-width="1.5" stroke-linejoin="miter" marker-end="url(#head)"/>
+<polyline points="476,252 503,252 503,206 524,206" fill="none" stroke="#59636e" stroke-width="1.5" stroke-linejoin="miter" marker-end="url(#head)"/>
+<rect x="800" y="126" width="164" height="124" fill="#d0d7de"/>
+<rect x="796" y="122" width="164" height="124" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="810" y="148" class="title">Pixel preview</text>
+<text x="810" y="171" class="body">iframe, strict CSP</text>
+<text x="810" y="189" class="body">runs only the</text>
+<text x="810" y="207" class="body">Pixel Web bridge</text>
+<text x="810" y="233" class="mono">preview-client.js</text>
+<polyline points="710,184 794,184" fill="none" stroke="#59636e" stroke-width="1.5" stroke-linejoin="miter" marker-end="url(#head)"/>
+<rect x="734.8" y="175" width="36.4" height="18" fill="#ffffff"/>
+<text x="753" y="188" text-anchor="middle" class="flow">HTML</text>
+<rect x="300" y="352" width="414" height="52" fill="#d0d7de"/>
+<rect x="296" y="348" width="414" height="52" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="310" y="379" class="title">Replay on source page</text>
+<text x="696" y="379" text-anchor="end" class="mono">lib/interaction.mjs</text>
+<polyline points="878,250 878,374 716,374" fill="none" stroke="#5b58c8" stroke-width="2" stroke-linejoin="miter" marker-end="url(#head-accent)"/>
+<text x="887" y="300" class="flow accent">click, type,</text>
+<text x="887" y="316" class="flow accent">scroll</text>
+<polyline points="296,374 118,374 118,298" fill="none" stroke="#5b58c8" stroke-width="2" stroke-linejoin="miter" marker-end="url(#head-accent)"/>
+<text x="127" y="326" class="flow accent">same action,</text>
+<text x="127" y="342" class="flow accent">then re-capture</text>
+</svg>
