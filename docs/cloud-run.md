@@ -8,7 +8,7 @@ Created 2026-10-06 in project `pixel-web-demo`, region `us-central1`. It replace
 
 | Setting | Value | Why |
 | --- | --- | --- |
-| CPU / memory | 1 vCPU, 2 GiB | Chromium snapshot and artwork work is CPU-bound; 0.1 CPU was the main cause of 45-second conversions on Render. |
+| CPU / memory | 1 vCPU, 4 GiB | Chromium snapshot and artwork work is CPU-bound; 0.1 CPU was the main cause of 45-second conversions on Render. A Hugging Face monthly paper listing (43 autoplaying videos, 321 images) ran out of memory at 2 GiB. |
 | Instances | 0 to 1 | Sessions and caches live in memory, so all visitors must reach the same instance. Scaling to zero keeps idle cost at zero. |
 | Billing | Request-based (default) | CPU is billed only while a request is in flight. |
 | Execution environment | Second generation, startup CPU boost | Full Linux system calls for Chromium; faster cold starts. |
@@ -23,13 +23,13 @@ Cloud Run sends `X-Forwarded-Proto: https`, so session cookies are marked `Secur
 - At most one instance can run.
 - The Artifact Registry repository keeps only the newest image (about 370 MB compressed, within the 0.5 GB free storage).
 
-At this traffic, usage should stay within Cloud Run's free monthly allowance (180,000 vCPU-seconds and 360,000 GiB-seconds). A Wikipedia conversion uses roughly 7–9 vCPU-seconds. The account started on Google's free trial; the service stops when the trial ends unless the billing account is upgraded.
+At this traffic, usage should stay within Cloud Run's free monthly allowance (180,000 vCPU-seconds and 360,000 GiB-seconds). A Wikipedia conversion uses roughly 9 vCPU-seconds and 36 GiB-seconds; the free allowance covers about 10,000 such conversions a month. The account started on Google's free trial; the service stops when the trial ends unless the billing account is upgraded.
 
 ## Deploy
 
 ```bash
 gcloud run deploy pixel-web --source . --region us-central1 --project pixel-web-demo \
-  --allow-unauthenticated --cpu 1 --memory 2Gi --min-instances 0 --max-instances 1 \
+  --allow-unauthenticated --cpu 1 --memory 4Gi --min-instances 0 --max-instances 1 \
   --concurrency 20 --timeout 120 --execution-environment gen2 --cpu-boost \
   --set-env-vars PIXELWEB_PUBLIC_SERVICE=1,PIXELWEB_SESSION_MODE=cookie,PIXELWEB_MAX_CAPTURES=2,PIXELWEB_SESSION_MS=300000
 ```
@@ -47,5 +47,6 @@ Single samples from a client in the United States, 2026-10-06. These are not per
 | Example.com conversion | 1.6–2.1 s | 5.4 s |
 | Wikipedia Pixel_art conversion | 9.7 s first, 7.9 s with cached artwork | 44.2 s |
 | GitHub repository page conversion | 9.9 s | not measured |
+| Hugging Face monthly papers (321 images, 43 videos) | 48–67 s, about 23 video frames skipped | failed at the download limit |
 
 Wikipedia stages on Cloud Run (commit `c2e0224`): navigation 1.7 s, preparation 3.5 s, snapshot 2.1 s, artwork 1.5 s. The cold-start row was measured on the previous revision, whose scroll preparation waited less per step. Navigation time depends on the source site and is not reduced by more CPU.

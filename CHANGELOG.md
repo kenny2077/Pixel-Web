@@ -6,7 +6,7 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 
 ### Features
 
-- Public Cloud Run demo (1 vCPU, 2 GiB, at most one instance, scales to zero).
+- Public Cloud Run demo (1 vCPU, 4 GiB, at most one instance, scales to zero).
 - The converter opens with a saved Wikipedia conversion and starts Chromium in the background; links and controls load the live page.
 - Hosted public-service mode with HMAC-signed anonymous sessions and per-visitor capture ownership.
 - The Render Free deployment was replaced by Cloud Run and removed.
@@ -21,6 +21,8 @@ This project uses [Conventional Commits](CONTRIBUTING.md#commits-and-pull-reques
 
 ### Performance
 
+- Preview HTML replaces image sources in one pass instead of one regular expression per image; a 4 MB page with 334 images went from 1.6 s to 5 ms locally.
+- Rendered backgrounds wait for their own images instead of 500 ms of network idle each.
 - Scroll preparation waits only while the page is still changing: Wikipedia preparation fell from 4.4 to 3.4 seconds locally.
 - Snapshots omit declarations the preview reproduces from inheritance or browser defaults: Wikipedia's snapshot HTML fell from 6.3 MB to 2.3 MB with identical rendering on the sites checked.
 - Text responses are gzip-compressed; the Docker image installs only Chromium's headless shell (1.0 GB to 0.37 GB compressed).

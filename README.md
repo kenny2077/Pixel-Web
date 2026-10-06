@@ -70,7 +70,7 @@ Conversion time depends mostly on the source site and on available CPU. On Cloud
 | Platform | Role |
 | --- | --- |
 | **Local Node server** | Full converter with retained source sessions. The reference setup. |
-| **Google Cloud Run** | Public demo: 1 vCPU, 2 GiB, one instance at most, scales to zero. Signed anonymous sessions; two retained pages, five-minute retention. |
+| **Google Cloud Run** | Public demo: 1 vCPU, 4 GiB, one instance at most, scales to zero. Signed anonymous sessions; two retained pages, five-minute retention. |
 | **GitHub Pages** | Redirects to the Cloud Run demo. |
 | **GitHub Actions** | Lockfile install and automated tests only. |
 | **Cloudflare Container** | Experimental configuration in `cloudflare/`. Requires Workers Paid; not deployed or measured. |
